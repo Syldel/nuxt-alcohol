@@ -1,4 +1,6 @@
-# Nuxt Minimal Starter
+# Nuxt Alcohol project
+
+<p align="left"><a href="https://nuxt.com/" target="_blank"><img src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/NuxtJS-Dark.svg" alt="NuxtJS" width="60" height="60" /></a><a href="https://fr.vuejs.org/" target="_blank"><img src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/VueJS-Dark.svg" alt="VueJS" width="60" height="60" /></a><a href="https://www.typescriptlang.org/" target="_blank"><img src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/TypeScript.svg" alt="TypeScript" height="60" /></a><a href="https://graphql.org" target="_blank"><img src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/GraphQL-Dark.svg" alt="Graphql" height="60" /></a><a href="https://eslint.org/" target="_blank"><img src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Eslint-Dark.svg" alt="eslint" width="60" height="60"/></a></p>
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
