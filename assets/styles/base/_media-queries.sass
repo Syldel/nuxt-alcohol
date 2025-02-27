@@ -1,0 +1,27 @@
+@use 'sass:map'
+
+$breakpoints: (verysmall: 320px, small: 480px, phone: 768px, tablet: 1024px, desktop: 1200px, large: 1400px)
+
+@mixin from-breakpoint($name)
+  @if not map.has-key($breakpoints, $name)
+    @warn "Warning: `#{$name}` is not a valid breakpoint name."
+  @else
+    @media (min-width: map.get($breakpoints, $name))
+      @content
+
+@mixin until-breakpoint($name)
+  @if not map.has-key($breakpoints, $name)
+    @warn "Warning: `#{$name}` is not a valid breakpoint name."
+  @else
+    @media (max-width: map.get($breakpoints, $name) - 1)
+      @content
+
+@mixin from-to-breakpoint($from, $to)
+  @if not map.has-key($breakpoints, $from)
+    @warn "Warning: `#{$from}` is not a valid breakpoint name."
+  @else
+    @if not map.has-key($breakpoints, $to)
+      @warn "Warning: `#{$to}` is not a valid breakpoint name."
+    @else
+      @media (min-width: map.get($breakpoints, $from)) and (max-width: map.get($breakpoints, $to) - 1)
+        @content

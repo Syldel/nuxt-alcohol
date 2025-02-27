@@ -1,0 +1,74 @@
+$colors_light: (
+  'danger500': #ff3d3d,
+  'danger700': #b71e39,
+
+  'warning100': #fff4d9,
+  'warning200': #ffe6b4,
+  'warning300': #ffd58e,
+  'warning500': #ffa844,
+
+  'primary500': #1f2c31,
+  'primary400': #27404A,
+  'primary300': #2B5363,
+
+  'area100': #F2EDDA,
+  'area200': #E6DEC3,
+  'area300': #D9D1B8,
+  'area400': #CCC199,
+  'area500': #BFB386,
+  'area600': #CCBD85,
+  'area700': #D9C682,
+  'area800': #E6CF7E,
+  'area900': #F2D879,
+
+  'secondary700': #FF2600,
+  'secondary600': #E63617,
+  'secondary500': #CC4129,
+  'secondary400': #B34836,
+  'secondary300': #994B3D,
+  'secondary200': #804940,
+
+  'success500': #79d127,
+  'success600': #5db31c,
+  'success700': #459613,
+
+  'neutral900': #0d171d,
+  'neutral800': #131f27,
+  'neutral700': #1b2936,
+  'neutral600': #2d3b47,
+  'neutral500': #3f4e58,
+  'neutral400': #566b75,
+  'neutral300': #74858f,
+  'neutral200': #9fa8b1,
+  'neutral100': #c4c9d3,
+  'neutral00': #e0e5eb,
+  'neutral': #f5f8fd,
+
+  'amzn-primary500': #ffd814,
+  'amzn-primary300': #ffce12,
+  'amzn-secondary500': #ffa41c,
+  'amzn-secondary300': #fa8900,
+);
+
+@mixin lighten-colors() {
+  @include generate-colors($colors_light);
+}
+
+// @mixin darken-colors() {
+//   // TODO: Use darken colors array instead
+//   @include generate-colors($colors_light);
+// }
+
+@mixin generate-colors($colors) {
+  @each $color, $value in $colors {
+    --#{$color}: #{$value};
+
+    .bg-#{$color} {
+      background-color: #{$value};
+    }
+
+    .text-#{$color} {
+      color: #{$value};
+    }
+  }
+}

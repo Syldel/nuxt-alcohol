@@ -1,0 +1,36 @@
+@use 'assets/styles/base/px2rem' as *;
+
+.alcohol-card,
+.card {
+  box-shadow: 0 size(1) size(24) 0 #dadce066;
+  background-color: var(--area300);
+  padding: size(24);
+  justify-content: space-between;
+  color: var(--primary500, #1f2c31);
+  border-radius: var(--round-corner-medium, size(12));
+
+  &__title {
+    font-size: size(16);
+    line-height: size(18);
+    font-weight: 600;
+    margin-bottom: size(16);
+  }
+
+  &__link {
+    align-self: flex-end;
+    white-space: nowrap;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: size(10);
+    color: var(--neutral500, #787c97);
+    font-size: size(14);
+    font-weight: 450;
+  }
+
+  &--no-shadow {
+    box-shadow: unset;
+  }
+}

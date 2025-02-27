@@ -1,0 +1,205 @@
+@use 'assets/styles/base/media-queries' as *;
+@use 'assets/styles/base/variables' as *;
+@use 'assets/styles/base/px2rem' as *;
+
+/*
+Available override CSS vars:
+--button-font-size: size(16);
+--button-padding-top: size(8);
+--button-padding-right: 0;
+--button-padding-bottom: size(12);
+--button-padding-left: size(79);
+--button-width: 100%;
+*/
+
+button {
+  @extend .alcohol-button;
+
+  &.amzn {
+    @extend .alcohol-button--amzn;
+  }
+
+  &.secondary {
+    @extend .alcohol-button--secondary;
+
+    &.amzn {
+      @extend .alcohol-button--secondary--amzn;
+    }
+  }
+
+  &.outline {
+    @extend .alcohol-button--outline;
+
+    &.amzn {
+      @extend .alcohol-button--outline--amzn;
+    }
+  }
+
+  &.no-border {
+    @extend .alcohol-button--no-border;
+  }
+
+  &.small {
+    @extend .alcohol-button--small;
+  }
+
+  &.max-width {
+    @extend .alcohol-button--max-width;
+  }
+}
+
+.alcohol-button {
+  margin: 0;
+  overflow: visible;
+  height: size(42);
+  line-height: normal;
+  padding: var(--button-padding-top, size(12)) var(--button-padding-right, size(18)) var(--button-padding-bottom, size(12)) var(--button-padding-left, size(18));
+  gap: size(8);
+  color: var(--neutral);
+
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  font-weight: 400;
+  font-size: var(--button-font-size, size(16));
+  font-family: $font-primary;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: none;
+  border-radius: size(22);
+
+  background-color: var(--primary500);
+  border-color: var(--primary500);
+
+  width: var(--button-width, initial);
+
+  &--max-width {
+    width: 100%;
+  }
+
+  // &:focus {
+  //   outline: size(3) solid var(--primary500);
+  // }
+
+  &:hover {
+    background-color: var(--primary300);
+    border-color: var(--primary300);
+  }
+
+  &:disabled {
+    background-color: var(--neutral300);
+    border-color: var(--neutral300);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &--amzn {
+    background-color: var(--amzn-primary500);
+    border-color: var(--amzn-primary500);
+    color: var(--neutral900);
+
+    &:hover {
+      background-color: var(--amzn-primary300);
+      border-color: var(--amzn-primary300);
+    }
+  }
+
+  &--secondary {
+    background-color: var(--secondary500);
+    border-color: var(--secondary500);
+    color: var(--neutral);
+
+    &:hover {
+      background-color: var(--secondary300);
+      border-color: var(--secondary300);
+    }
+
+    &:disabled {
+      background-color: var(--neutral300);
+      border-color: var(--neutral300);
+      color: var(--neutral);
+    }
+
+    &--amzn {
+      background-color: var(--amzn-secondary500);
+      border-color: var(--amzn-secondary500);
+      color: var(--neutral900);
+
+      &:hover {
+        background-color: var(--amzn-secondary300);
+        border-color: var(--amzn-secondary300);
+      }
+    }
+  }
+
+  &--outline {
+    background-color: transparent;
+    border-width: size(1);
+    border-style: solid;
+    color: var(--primary500);
+
+    &:hover {
+      background-color: transparent;
+      color: var(--primary300);
+    }
+
+    &:disabled {
+      background-color: transparent;
+      color: var(--neutral300);
+    }
+
+    &--amzn {
+      color: var(--amzn-primary500);
+
+      &:hover {
+        border-color: var(--amzn-primary300);
+        color: var(--amzn-primary300);
+      }
+    }
+
+    &.alcohol-button--secondary {
+      color: var(--secondary500);
+
+      &:hover {
+        background-color: transparent;
+        color: var(--secondary300);
+      }
+
+      &:disabled {
+        background-color: transparent;
+        color: var(--neutral300);
+      }
+
+      &--amzn {
+        color: var(--amzn-secondary500);
+        background-color: transparent;
+
+        &:hover {
+          border-color: var(--amzn-secondary300);
+          color: var(--amzn-secondary300);
+        }
+      }
+    }
+  }
+
+  &--no-border {
+    @extend .alcohol-button--outline;
+    border: none;
+  }
+
+  &--small {
+    height: size(32);
+    padding: var(--button-padding-top, size(12)) var(--button-padding-right, size(16)) var(--button-padding-bottom, size(12)) var(--button-padding-left, size(16));
+    font-size: var(--button-font-size, size(16));
+    border-radius: size(16);
+
+    @include until-breakpoint(phone) {
+      font-size: calc(var(--button-font-size, size(16)) - size(2));
+    }
+  }
+}

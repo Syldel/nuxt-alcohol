@@ -1,0 +1,48 @@
+a {
+  @extend .alcohol-link;
+
+  &.secondary {
+    @extend .alcohol-link--secondary;
+
+    &.amzn {
+      @extend .alcohol-link--secondary--amzn;
+    }
+  }
+
+  &.amzn {
+    @extend .alcohol-link--amzn;
+  }
+}
+
+.alcohol-link {
+  color: var(--neutral900);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--primary300);
+  }
+
+  &--secondary {
+    color: var(--secondary500);
+
+    &:hover {
+      color: var(--secondary300);
+    }
+
+    &--amzn {
+      color: var(--amzn-secondary500);
+
+      &:hover {
+        color: var(--amzn-secondary300);
+      }
+    }
+  }
+
+  &--amzn {
+    color: var(--amzn-primary500);
+
+    &:hover {
+      color: var(--amzn-primary300);
+    }
+  }
+}

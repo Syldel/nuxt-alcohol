@@ -1,0 +1,62 @@
+@use 'assets/styles/base/media-queries' as *;
+@use 'assets/styles/base/px2rem' as *;
+
+.alert-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: size(10);
+  border-radius: var(--round-corner-medium, size(12));
+  padding: size(24);
+  color: var(--primary500, #1f2c31);
+  background-color: var(--area300);
+  border: size(1) solid var(--neutral400, #566b75);
+
+  @include until-breakpoint(phone) {
+    flex-direction: column;
+  }
+
+  &--warning {
+    border: size(1) solid var(--warning500, #ffa844);
+    background-color: var(--warning200, #ffe6b4);
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: row;
+    gap: size(10);
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: size(4);
+  }
+
+  &__icon {
+    color: var(--primary500, #1f2c31);
+  }
+
+  &__title {
+    color: var(--primary500, #1f2c31);
+    font-size: size(16);
+    line-height: size(18);
+    font-weight: 600;
+  }
+
+  &__content {
+    font-size: size(14);
+    font-style: normal;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+    gap: size(10);
+    align-items: center;
+
+    @include until-breakpoint(phone) {
+      --button-width: 100%;
+    }
+  }
+}

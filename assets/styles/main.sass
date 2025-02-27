@@ -1,0 +1,25 @@
+@use 'base/colors' as *
+@use 'base/flex-responsive'
+
+@use 'base/media-queries'
+//@use 'base/spacing'
+//@use 'base/texts'
+@use 'base/titles'
+@use 'base/variables' as *
+
+@use 'components/alcohol-button'
+@use 'components/links'
+@use 'components/alcohol-card'
+// @use 'components/alert-box'
+// @use 'components/spinner-loader'
+
+html,
+body
+  font-family: $font-primary
+  box-sizing: border-box
+
+body
+  @include lighten-colors()
+  background: url(../images/bg-crossed-light_densite75.jpg) repeat scroll left top #c8c0ac
+  color: var(--neutral900)
+  margin: 0
