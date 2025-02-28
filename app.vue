@@ -8,7 +8,9 @@ useHead({
 </script>
 
 <template>
-  <AppSandbox />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <style lang="sass">
