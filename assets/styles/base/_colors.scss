@@ -63,12 +63,12 @@ $colors_light: (
   @each $color, $value in $colors {
     --#{$color}: #{$value};
 
-    .bg-#{$color} {
-      background-color: #{$value};
-    }
+    // .bg-#{$color} {
+    //   background-color: #{$value};
+    // }
 
-    .text-#{$color} {
-      color: #{$value};
-    }
+    // .text-#{$color} {
+    //   color: #{$value};
+    // }
   }
 }

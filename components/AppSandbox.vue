@@ -2,7 +2,7 @@
   <h1>
     RELAXXED ALCOHOL UNIVERSE
   </h1>
-  <div style="margin: 10px; padding: 10px">
+  <div>
     <h2>Welcome</h2>
     <p>Simple text</p>
     <!-- <div class="spinner-loader" /> -->
@@ -138,7 +138,7 @@
     </div>
   </div> -->
   <div class="flex-row flex-row--column-until-phone">
-    <div class="card" style="width: 200px">
+    <div class="card" style="width: 50%">
       <div class="card__title">
         title
       </div>
@@ -149,7 +149,7 @@
         </a>
       </div>
     </div>
-    <div class="card" style="width: 200px">
+    <div class="card" style="width: 50%">
       <div class="card__title">
         title
       </div>
@@ -165,3 +165,9 @@
     <img src="~/assets/images/relaxxed-alcohol-universe-logo.svg" alt="Relaxxed alcohol universe" width="300" height="300">
   </div>
 </template>
+
+<style lang="sass" scoped>
+@use '@/assets/styles/components/alcohol-button'
+@use '@/assets/styles/components/alcohol-card'
+@use '@/assets/styles/components/titles'
+</style>

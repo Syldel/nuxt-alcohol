@@ -10,8 +10,8 @@ useHead({
 <template>
   <section class="home">
     <h1><span>Bienvenue</span> sur ce nouveau site</h1>
-
     <p>Lorem Ipsum</p>
+    <AppSandbox />
   </section>
 </template>
 

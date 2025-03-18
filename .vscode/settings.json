@@ -10,7 +10,7 @@
   },
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
-  "editor.insertSpaces": false,
+  "editor.insertSpaces": true,
   "eslint.run": "onSave",
   "eslint.format.enable": true,
   "eslint.validate": [
