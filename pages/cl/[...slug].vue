@@ -115,12 +115,14 @@ useHead({
     </div>
 
     <div v-if="pageType === 'whiskys'">
-      isWhiskysPage
+      <AppCountryList type="whisky" />
     </div>
   </section>
 </template>
 
 <style lang="sass" scoped>
+@use '@/assets/styles/components/titles'
+
 .category-listing
   p
     color: blue
