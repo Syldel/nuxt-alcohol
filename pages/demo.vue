@@ -1,23 +1,25 @@
 <script setup lang="ts">
 useHead({
-  title: 'À propos',
+  title: 'Design system',
   meta: [
-    { name: 'description', content: 'À propos de ce site' },
+    { name: 'description', content: 'Relaxxed alcohol universe' },
   ],
 })
 </script>
 
 <template>
-  <section class="about">
-    <h1><span>À propos</span></h1>
+  <section class="demo">
+    <h1><span>Design system</span></h1>
+    <p>Lorem Ipsum</p>
     <NuxtLink to="/">
       Retour à l'accueil
     </NuxtLink>
+    <AppSandbox />
   </section>
 </template>
 
 <style lang="sass" scoped>
-.about
+.demo
   p
     color: blue
 </style>

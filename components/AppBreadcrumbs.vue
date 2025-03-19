@@ -1,0 +1,101 @@
+<script setup lang="ts">
+const nuxtApp = useNuxtApp()
+const route = useRoute()
+
+const siteOrigin = ref('')
+
+const { capitalizeFirstLetter } = useStringUtils()
+
+const normalizePath = (path: string): string => `/${path.replace(/^\/+|\/+$/g, '')}`
+
+const breadcrumbs = computed(() =>
+  route.path.split('/').filter(Boolean).map((segment, index, arr) => {
+    const path = normalizePath(`/${arr.slice(0, index + 1).join('/')}`)
+    return { name: capitalizeFirstLetter(decodeURIComponent(segment.replace(/-/g, ' '))), path, isLast: index === arr.length - 1 }
+  }).map((segment) => {
+    const lowerName = segment.name.toLowerCase()
+    if (lowerName === 'cl') {
+      segment.name = 'Bières, vins et spiritueux'
+    }
+    if (lowerName === 'bieres') {
+      segment.name = 'Bières'
+    }
+    return segment
+  }),
+)
+
+// Attendre la fin de l'hydratation avant de récupérer `window.location.origin`
+onMounted(() => {
+  if (nuxtApp.isHydrating && !nuxtApp.payload.serverRendered) {
+    const checkHydration = setInterval(() => {
+      if (!nuxtApp.isHydrating) {
+        siteOrigin.value = window.location.origin
+        clearInterval(checkHydration)
+      }
+    }, 200)
+  }
+  else {
+    // Si déjà client, récupère immédiatement
+    siteOrigin.value = window.location.origin
+  }
+})
+
+const breadcrumbJsonLd = computed(() => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': breadcrumbs.value.map((crumb, index) => ({
+    '@type': 'ListItem',
+    'position': index + 1,
+    'name': crumb.name,
+    'item': `${siteOrigin.value}${crumb.path}`, // Utilise l'URL client après hydratation
+  })),
+}))
+
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(breadcrumbJsonLd.value),
+    },
+  ],
+})
+</script>
+
+<template>
+  <nav aria-label="Fil d'Ariane" class="breadcrumbs">
+    <ul>
+      <li>
+        <NuxtLink to="/">
+          Accueil
+        </NuxtLink>
+      </li>
+      <li v-for="(crumb, index) in breadcrumbs" :key="index">
+        <span v-if="crumb.isLast">{{ crumb.name }}</span>
+        <NuxtLink v-else :to="crumb.path">
+          {{ crumb.name }}
+        </NuxtLink>
+      </li>
+    </ul>
+  </nav>
+</template>
+
+<style lang="sass" scoped>
+.breadcrumbs
+  font-size: size(14)
+  padding: size(8) 0
+
+  ul
+    list-style: none
+    display: flex
+    gap: 5px
+    padding: 0
+    margin: 0
+
+    li
+      display: flex
+      align-items: center
+
+      &:not(:last-child)::after
+        content: "›"
+        margin: 0 size(5)
+</style>
