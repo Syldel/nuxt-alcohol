@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStringUtils } from '@/composables/useStringUtils'
+import type { CountryInfo } from '~/types/graphql/types'
 
 const route = useRoute()
 
@@ -12,17 +12,6 @@ else {
 }
 
 slugParamArr = slugParamArr.filter(s => !!s)
-
-slugParamArr = slugParamArr.map((slug) => {
-  if (slug === 'bieres') {
-    slug = 'bières'
-  }
-  return slug
-})
-
-const { capitalizeFirstLetter } = useStringUtils()
-
-const slugParamStr = slugParamArr.map(slug => capitalizeFirstLetter(slug)).join(' / ')
 
 // 0 => ex: spiritueux
 // 1 => ex: whiskys
@@ -55,10 +44,43 @@ function getPageType() {
     }
   }
 
+  if (slugParamArr.length === 3) {
+    return 'country'
+  }
+
   return 'unknown'
 }
 
 const pageType = getPageType()
+
+const countriesRef = ref<CountryInfo[]>([])
+const countriesStatusRef = ref()
+const countriesErrorRef = ref()
+
+const langCode = 'fr_FR'
+
+if (pageType === 'whiskys' || pageType === 'country') {
+  const { fetchCountries } = useGraphQL()
+  const { data, status, error } = await fetchCountries({ type: 'whisky', langCode })
+
+  countriesStatusRef.value = status
+  countriesErrorRef.value = error
+  countriesRef.value = data?.value?.getUniqueCountries || []
+}
+
+slugParamArr = slugParamArr.map((slug) => {
+  if (slug === 'bieres') {
+    slug = 'bières'
+  }
+  if (pageType === 'country') {
+    slug = countriesRef.value.find(country => country.iso.toLowerCase() === slug)?.names.fr || slug
+  }
+  return slug
+})
+
+const { capitalizeFirstLetter } = useStringUtils()
+
+const slugParamStr = slugParamArr.map(slug => capitalizeFirstLetter(slug)).join(' / ')
 
 useHead({
   title: `${slugParamStr || 'Bières, vins et spiritueux'} | Relaxxed alcohol universe`,
@@ -70,8 +92,15 @@ useHead({
 
 <template>
   <section class="category-listing">
-    <AppBreadcrumbs />
+    <AppBreadcrumbs :countries="countriesRef" />
     <h1><span>{{ capitalizeFirstLetter(slugParamArr[slugParamArr.length - 1] || 'Bières, vins et spiritueux') }}</span></h1>
+
+    <div v-if="countriesStatusRef?.value === 'pending'">
+      <div class="spinner-loader" />
+    </div>
+    <div v-else-if="countriesStatusRef?.value === 'error'" class="category-listing__error">
+      {{ countriesErrorRef?.value?.message || 'Erreur inconnue' }}
+    </div>
 
     <div v-if="pageType === 'root'">
       <ul>
@@ -91,7 +120,7 @@ useHead({
       </ul>
     </div>
 
-    <div v-if="pageType === 'spiritueux'">
+    <div v-else-if="pageType === 'spiritueux'">
       <ul>
         <li>
           <NuxtLink :to="`/cl/${slugParamArr.join('/')}/whiskys`">
@@ -107,23 +136,31 @@ useHead({
       </ul>
     </div>
 
-    <div v-if="pageType === 'bieres'">
+    <div v-else-if="pageType === 'bieres'">
       Visitez notre site partenaire :
       <NuxtLink to="https://www.beer-me.fr/">
         https://www.beer-me.fr/
       </NuxtLink>
     </div>
 
-    <div v-if="pageType === 'whiskys'">
-      <AppCountryList type="whisky" />
+    <div v-else-if="pageType === 'whiskys'">
+      <AppCountryList type="whisky" :countries="countriesRef" />
+    </div>
+
+    <div v-else-if="pageType === 'country'">
+      BRAND LIST
     </div>
   </section>
 </template>
 
 <style lang="sass" scoped>
+@use '@/assets/styles/components/spinner-loader'
 @use '@/assets/styles/components/titles'
 
 .category-listing
   p
     color: blue
+
+  &__error
+    color: var(--danger700)
 </style>

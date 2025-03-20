@@ -11,7 +11,7 @@ useHead({
   <section class="home">
     <h1><span>Bienvenue</span> sur "Relaxxed alcohol universe"</h1>
     <NuxtLink to="/cl">
-      Catégories
+      Bières, vins et spiritueux
     </NuxtLink>
     <ul>
       <li>

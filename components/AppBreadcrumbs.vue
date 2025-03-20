@@ -1,4 +1,14 @@
 <script setup lang="ts">
+import type { CountryInfo } from '~/types/graphql/types'
+
+const props = withDefaults(
+  defineProps<{
+    countries?: CountryInfo[]
+  }>(),
+  {
+    countries: () => [],
+  },
+)
 const nuxtApp = useNuxtApp()
 const route = useRoute()
 
@@ -20,6 +30,9 @@ const breadcrumbs = computed(() =>
     if (lowerName === 'bieres') {
       segment.name = 'Bières'
     }
+
+    segment.name = props.countries.find(country => country.iso.toLowerCase() === lowerName)?.names.fr || segment.name
+
     return segment
   }),
 )
