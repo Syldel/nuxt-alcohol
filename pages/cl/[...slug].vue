@@ -48,24 +48,41 @@ function getPageType() {
     return 'country'
   }
 
+  if (slugParamArr.length === 4) {
+    return 'brand'
+  }
+
   return 'unknown'
 }
 
 const pageType = getPageType()
 
 const countriesRef = ref<CountryInfo[]>([])
-const countriesStatusRef = ref()
-const countriesErrorRef = ref()
+const statusRef = ref()
+const errorRef = ref()
+
+const brandsRef = ref<string[]>([])
 
 const langCode = 'fr_FR'
+const type = 'whisky'
 
-if (pageType === 'whiskys' || pageType === 'country') {
+if (slugParamArr.length >= 2) {
   const { fetchCountries } = useGraphQL()
-  const { data, status, error } = await fetchCountries({ type: 'whisky', langCode })
+  const { data, status, error } = await fetchCountries({ type, langCode })
 
-  countriesStatusRef.value = status
-  countriesErrorRef.value = error
+  statusRef.value = status
+  errorRef.value = error
   countriesRef.value = data?.value?.getUniqueCountries || []
+}
+
+if (pageType === 'country') {
+  const { fetchDetails } = useGraphQL()
+  const iso = slugParamArr[2]
+  const { data, status, error } = await fetchDetails({ legend: 'Marque', iso, type, langCode })
+
+  statusRef.value = status
+  errorRef.value = error
+  brandsRef.value = data?.value?.getUniqueDetails || []
 }
 
 slugParamArr = slugParamArr.map((slug) => {
@@ -95,11 +112,11 @@ useHead({
     <AppBreadcrumbs :countries="countriesRef" />
     <h1><span>{{ capitalizeFirstLetter(slugParamArr[slugParamArr.length - 1] || 'Bières, vins et spiritueux') }}</span></h1>
 
-    <div v-if="countriesStatusRef?.value === 'pending'">
+    <div v-if="statusRef?.value === 'pending'">
       <div class="spinner-loader" />
     </div>
-    <div v-else-if="countriesStatusRef?.value === 'error'" class="category-listing__error">
-      {{ countriesErrorRef?.value?.message || 'Erreur inconnue' }}
+    <div v-else-if="statusRef?.value === 'error'" class="category-listing__error">
+      {{ errorRef?.value?.message || 'Erreur inconnue' }}
     </div>
 
     <div v-if="pageType === 'root'">
@@ -144,11 +161,11 @@ useHead({
     </div>
 
     <div v-else-if="pageType === 'whiskys'">
-      <AppCountryList type="whisky" :countries="countriesRef" />
+      <AppCountryList :countries="countriesRef" />
     </div>
 
     <div v-else-if="pageType === 'country'">
-      BRAND LIST
+      <AppBrandList :brands="brandsRef" />
     </div>
   </section>
 </template>
@@ -158,9 +175,6 @@ useHead({
 @use '@/assets/styles/components/titles'
 
 .category-listing
-  p
-    color: blue
-
   &__error
     color: var(--danger700)
 </style>
