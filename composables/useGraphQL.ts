@@ -1,4 +1,4 @@
-import type { CountryInfo } from '~/types/graphql/types'
+import type { Alcohol, CountryInfo } from '~/types/graphql/types'
 
 const GET_COUNTRIES = gql`
   query GetCountries($type: String, $langCode: String) {
@@ -36,6 +36,21 @@ interface GetDetailsResponse {
 
 /* ****************************************************************************** */
 
+const GET_ALCOHOLS = gql`
+  query GetAlcohols($detailValue: String, $type: String, $langCode: String) {
+    alcohols(filter: { detail: { value: $detailValue }, type: $type, langCode: $langCode }) {
+      asin
+      name
+    }
+  }
+`
+
+interface GetAlcoholsResponse {
+  alcohols: Alcohol[]
+}
+
+/* ****************************************************************************** */
+
 export function useGraphQL() {
   const fetchCountries = async (variables?: Record<string, any>) => {
     return await useAsyncQuery<GetCountriesResponse>(GET_COUNTRIES, variables)
@@ -45,8 +60,13 @@ export function useGraphQL() {
     return await useAsyncQuery<GetDetailsResponse>(GET_DETAILS, variables)
   }
 
+  const fetchAlcohols = async (variables?: Record<string, any>) => {
+    return await useAsyncQuery<GetAlcoholsResponse>(GET_ALCOHOLS, variables)
+  }
+
   return {
     fetchCountries,
     fetchDetails,
+    fetchAlcohols,
   }
 }

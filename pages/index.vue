@@ -36,6 +36,4 @@ useHead({
 
 <style lang="sass" scoped>
 // .home
-//   p
-//     color: blue
 </style>

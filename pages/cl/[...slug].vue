@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CountryInfo } from '~/types/graphql/types'
+import type { Alcohol, CountryInfo } from '~/types/graphql/types'
 
 const route = useRoute()
 
@@ -62,6 +62,7 @@ const statusRef = ref()
 const errorRef = ref()
 
 const brandsRef = ref<string[]>([])
+const alcoholsRef = ref<Alcohol[]>([])
 
 const langCode = 'fr_FR'
 const type = 'whisky'
@@ -83,6 +84,16 @@ if (pageType === 'country') {
   statusRef.value = status
   errorRef.value = error
   brandsRef.value = data?.value?.getUniqueDetails || []
+}
+
+if (pageType === 'brand') {
+  const { fetchAlcohols } = useGraphQL()
+  const brand = slugParamArr[3]
+  const { data, status, error } = await fetchAlcohols({ detailValue: brand, type, langCode })
+
+  statusRef.value = status
+  errorRef.value = error
+  alcoholsRef.value = data?.value?.alcohols || []
 }
 
 slugParamArr = slugParamArr.map((slug) => {
@@ -166,6 +177,10 @@ useHead({
 
     <div v-else-if="pageType === 'country'">
       <AppBrandList :brands="brandsRef" />
+    </div>
+
+    <div v-else-if="pageType === 'brand'">
+      <AppAlcoholList :alcohols="alcoholsRef" />
     </div>
   </section>
 </template>
