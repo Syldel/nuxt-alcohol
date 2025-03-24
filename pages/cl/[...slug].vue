@@ -15,8 +15,13 @@ slugParamArr = slugParamArr.filter(s => !!s)
 
 // 0 => ex: spiritueux
 // 1 => ex: whiskys
-// 2 => pays
-// 3 => marque
+// 2 => country
+// 3 => brand
+// 4 => product
+
+const { extractASIN } = useAmznUtils()
+
+const productASIN = extractASIN(slugParamArr.join('/'))
 
 function getPageType() {
   if (slugParamArr.length === 0) {
@@ -50,6 +55,10 @@ function getPageType() {
 
   if (slugParamArr.length === 4) {
     return 'brand'
+  }
+
+  if (productASIN) {
+    return 'product'
   }
 
   return 'unknown'
@@ -96,12 +105,24 @@ if (pageType === 'brand') {
   alcoholsRef.value = data?.value?.alcohols || []
 }
 
+if (pageType === 'product') {
+  const { fetchAlcoholFull } = useGraphQL()
+  const { data, status, error } = await fetchAlcoholFull({ asin: productASIN, type, langCode })
+
+  statusRef.value = status
+  errorRef.value = error
+  alcoholsRef.value = data?.value?.alcohols || []
+}
+
 slugParamArr = slugParamArr.map((slug) => {
   if (slug === 'bieres') {
     slug = 'bières'
   }
   if (pageType === 'country') {
     slug = countriesRef.value.find(country => country.iso.toLowerCase() === slug)?.names.fr || slug
+  }
+  if (pageType === 'product') {
+    slug = alcoholsRef.value[0]?.name || slug
   }
   return slug
 })
@@ -181,6 +202,10 @@ useHead({
 
     <div v-else-if="pageType === 'brand'">
       <AppAlcoholList :alcohols="alcoholsRef" />
+    </div>
+
+    <div v-else-if="pageType === 'product'">
+      <AppProductFull :alcohol="alcoholsRef[0]" />
     </div>
   </section>
 </template>

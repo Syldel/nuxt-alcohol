@@ -41,11 +41,75 @@ const GET_ALCOHOLS = gql`
     alcohols(filter: { detail: { value: $detailValue }, type: $type, langCode: $langCode }) {
       asin
       name
+      images {
+        thumbnails
+      }
     }
   }
 `
 
 interface GetAlcoholsResponse {
+  alcohols: Alcohol[]
+}
+
+/* ****************************************************************************** */
+
+const GET_ALCOHOL_FULL = gql`
+  query GetAlcohols($asin: String, $type: String, $langCode: String) {
+    alcohols(filter: { asin: $asin, type: $type, langCode: $langCode }) {
+      _id
+      asin
+      name
+      details {
+        legend
+        value
+      }
+      description {
+        images
+        product
+        manufacturer
+      }
+      familyLinks{
+        asin
+        thumbSrc
+        title
+      }
+      features
+      images {
+        bigs
+        thumbnails
+      }
+      country {
+        names {
+          fr
+        }
+        iso
+        iso3
+        regions {
+          names {
+            fr
+          }
+          iso
+        }
+      }
+      newerVersion {
+        asin
+        thumbSrc
+        title
+      }
+      prices {
+        basisPrice {currency price}
+        priceToPay {currency price}
+      }
+      reviews {rating ratingCount}
+      shortlink
+      type
+      langCode
+    }
+  }
+`
+
+interface GetAlcoholFullResponse {
   alcohols: Alcohol[]
 }
 
@@ -64,9 +128,14 @@ export function useGraphQL() {
     return await useAsyncQuery<GetAlcoholsResponse>(GET_ALCOHOLS, variables)
   }
 
+  const fetchAlcoholFull = async (variables?: Record<string, any>) => {
+    return await useAsyncQuery<GetAlcoholFullResponse>(GET_ALCOHOL_FULL, variables)
+  }
+
   return {
     fetchCountries,
     fetchDetails,
     fetchAlcohols,
+    fetchAlcoholFull,
   }
 }

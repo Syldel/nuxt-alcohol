@@ -77,11 +77,11 @@ useHead({
 <template>
   <nav aria-label="Fil d'Ariane" class="breadcrumbs">
     <ul>
-      <li>
+      <!-- <li>
         <NuxtLink to="/">
           Accueil
         </NuxtLink>
-      </li>
+      </li> -->
       <li v-for="(crumb, index) in breadcrumbs" :key="index">
         <span v-if="crumb.isLast">{{ crumb.name }}</span>
         <NuxtLink v-else :to="crumb.path">
@@ -103,6 +103,7 @@ useHead({
     gap: 5px
     padding: 0
     margin: 0
+    flex-flow: wrap
 
     li
       display: flex

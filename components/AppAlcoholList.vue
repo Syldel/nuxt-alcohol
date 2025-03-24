@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Alcohol } from '~/types/graphql/types'
+
 withDefaults(
   defineProps<{
     alcohols?: Alcohol[]

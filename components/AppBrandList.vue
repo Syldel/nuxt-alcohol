@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    brands?: srting[]
+    brands?: string[]
   }>(),
   {
     brands: () => [],
