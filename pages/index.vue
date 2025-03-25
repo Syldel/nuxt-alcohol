@@ -2,14 +2,14 @@
 useHead({
   title: 'Accueil',
   meta: [
-    { name: 'description', content: 'Relaxxed alcohol universe' },
+    { name: 'description', content: 'Relaxxed spirits' },
   ],
 })
 </script>
 
 <template>
   <section class="home">
-    <h1><span>Bienvenue</span> sur "Relaxxed alcohol universe"</h1>
+    <h1><span>Bienvenue</span> sur "Relaxxed spirits"</h1>
     <NuxtLink to="/cl">
       Bières, vins et spiritueux
     </NuxtLink>

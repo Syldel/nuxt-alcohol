@@ -3,7 +3,7 @@ useHead({
   htmlAttrs: {
     lang: 'fr',
   },
-  titleTemplate: '%s - Relaxxed alcohol universe',
+  titleTemplate: '%s - Relaxxed spirits',
 })
 </script>
 

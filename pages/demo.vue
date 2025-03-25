@@ -2,7 +2,7 @@
 useHead({
   title: 'Design system',
   meta: [
-    { name: 'description', content: 'Relaxxed alcohol universe' },
+    { name: 'description', content: 'Relaxxed spirits' },
   ],
 })
 </script>

@@ -132,9 +132,9 @@ const { capitalizeFirstLetter } = useStringUtils()
 const slugParamStr = slugParamArr.map(slug => capitalizeFirstLetter(slug)).join(' / ')
 
 useHead({
-  title: `${slugParamStr || 'Bières, vins et spiritueux'} | Relaxxed alcohol universe`,
+  title: `${slugParamStr || 'Bières, vins et spiritueux'} | Relaxxed spirits`,
   meta: [
-    { name: 'description', content: `${slugParamStr || 'Bières, vins et spiritueux'} | Relaxxed alcohol universe` },
+    { name: 'description', content: `${slugParamStr || 'Bières, vins et spiritueux'} | Relaxxed spirits` },
   ],
 })
 </script>

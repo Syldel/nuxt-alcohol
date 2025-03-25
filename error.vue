@@ -2,7 +2,7 @@
 const error = useError()
 
 useHead({
-  title: computed(() => `${error?.value?.statusCode || 'Erreur inconnue'} | Relaxxed alcohol universe`),
+  title: computed(() => `${error?.value?.statusCode || 'Erreur inconnue'} | Relaxxed spirits`),
   meta: [
     {
       name: 'robots',

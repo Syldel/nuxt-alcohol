@@ -1,6 +1,6 @@
 <template>
   <h1>
-    RELAXXED ALCOHOL UNIVERSE
+    RELAXXED SPIRITS
   </h1>
   <div>
     <h2>Welcome</h2>
