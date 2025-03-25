@@ -29,6 +29,9 @@ const currentYear = new Date().getFullYear()
           </div> -->
         </div>
         <div class="footer__line">
+          <span class="footer__sub">Partenaires:</span><a href="https://www.beer-me.fr/" target="_blank">www.beer-me.fr</a>
+        </div>
+        <div class="footer__line">
           <div class="footer__sub">
             Copyright © {{ currentYear }}. All rights reserved.
           </div>
@@ -45,7 +48,7 @@ const currentYear = new Date().getFullYear()
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/base/nav-mixin' as *
+@use '@/assets/styles/components/nav-mixin' as *
 
 footer
   background-color: var(--area300)

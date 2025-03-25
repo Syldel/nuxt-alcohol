@@ -35,7 +35,7 @@ import logoSvgImage from '@/assets/images/relaxxed-alcohol-universe-logo.svg'
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/base/nav-mixin' as *
+@use '@/assets/styles/components/nav-mixin' as *
 
 header
   background-color: var(--area300)

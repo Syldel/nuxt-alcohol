@@ -72,6 +72,9 @@ useHead({
     },
   ],
 })
+
+// To remove the last element
+const filteredBreadcrumbs = computed(() => breadcrumbs.value.slice(0, breadcrumbs.value.length - 1))
 </script>
 
 <template>
@@ -82,7 +85,7 @@ useHead({
           Accueil
         </NuxtLink>
       </li> -->
-      <li v-for="(crumb, index) in breadcrumbs" :key="index">
+      <li v-for="(crumb, index) in filteredBreadcrumbs" :key="index">
         <span v-if="crumb.isLast">{{ crumb.name }}</span>
         <NuxtLink v-else :to="crumb.path">
           {{ crumb.name }}

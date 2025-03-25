@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <div class="product-full">
-    <p>{{ alcohol?.name }}</p>
+    WIP
   </div>
 </template>
 
