@@ -37,6 +37,11 @@ export default defineNuxtConfig({
     clients: {
       default: {
         httpEndpoint: process.env.GQL_HOST || '',
+        httpLinkOptions: {
+          headers: process.env.NUXT_ENV_ADD_NGROK_HEADER === 'true'
+            ? { 'ngrok-skip-browser-warning': 'true' }
+            : {},
+        },
       },
     },
   },
