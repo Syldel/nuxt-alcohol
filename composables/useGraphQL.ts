@@ -36,14 +36,22 @@ interface GetDetailsResponse {
 
 /* ****************************************************************************** */
 
-const GET_ALCOHOLS = gql`
-  query GetAlcohols($detailValue: String, $type: String, $langCode: String) {
+const GET_ALCOHOLS_BY_DETAIL_VALUE = gql`
+  query GetAlcoholsByDetailValue($detailValue: String, $type: String, $langCode: String) {
     alcohols(filter: { detail: { value: $detailValue }, type: $type, langCode: $langCode }) {
       asin
       name
       images {
         thumbnails
       }
+      details {
+        legend
+        value
+      }
+      country {
+        iso
+      }
+      type
     }
   }
 `
@@ -124,8 +132,8 @@ export function useGraphQL() {
     return await useAsyncQuery<GetDetailsResponse>(GET_DETAILS, variables)
   }
 
-  const fetchAlcohols = async (variables?: Record<string, any>) => {
-    return await useAsyncQuery<GetAlcoholsResponse>(GET_ALCOHOLS, variables)
+  const fetchAlcoholsByDetailValue = async (variables?: Record<string, any>) => {
+    return await useAsyncQuery<GetAlcoholsResponse>(GET_ALCOHOLS_BY_DETAIL_VALUE, variables)
   }
 
   const fetchAlcoholFull = async (variables?: Record<string, any>) => {
@@ -135,7 +143,7 @@ export function useGraphQL() {
   return {
     fetchCountries,
     fetchDetails,
-    fetchAlcohols,
+    fetchAlcoholsByDetailValue,
     fetchAlcoholFull,
   }
 }

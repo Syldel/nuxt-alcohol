@@ -13,58 +13,12 @@ else {
 
 slugParamArr = slugParamArr.filter(s => !!s)
 
-// 0 => ex: spiritueux
-// 1 => ex: whiskys
-// 2 => country
-// 3 => brand
-// 4 => product
-
 const { extractASIN } = useAmznUtils()
-
 const productASIN = extractASIN(slugParamArr.join('/'))
 
-function getPageType() {
-  if (slugParamArr.length === 0) {
-    return 'root'
-  }
+const { getPageType, getCanonicalUrl, generateCanonicalUrl, formatUrl } = usePageUtils()
 
-  if (slugParamArr.length === 1) {
-    const slug = slugParamArr[0].toLowerCase().trim()
-    if (['spiritueux', 'spirit'].includes(slug)) {
-      return 'spiritueux'
-    }
-  }
-
-  if (slugParamArr.length === 1) {
-    const slug = slugParamArr[0].toLowerCase().trim()
-    if (['bières', 'bieres'].includes(slug)) {
-      return 'bieres'
-    }
-  }
-
-  if (slugParamArr.length === 2) {
-    const slug = slugParamArr[1].toLowerCase().trim()
-    if (['whiskys', 'whiskies', 'whiskeys'].includes(slug)) {
-      return 'whiskys'
-    }
-  }
-
-  if (slugParamArr.length === 3) {
-    return 'country'
-  }
-
-  if (slugParamArr.length === 4) {
-    return 'brand'
-  }
-
-  if (productASIN) {
-    return 'product'
-  }
-
-  return 'unknown'
-}
-
-const pageType = getPageType()
+const pageType = getPageType(slugParamArr)
 
 const countriesRef = ref<CountryInfo[]>([])
 const statusRef = ref()
@@ -76,9 +30,14 @@ const alcoholsRef = ref<Alcohol[]>([])
 const langCode = 'fr_FR'
 const type = 'whisky'
 
+let allBrands: string[] = []
+
 if (slugParamArr.length >= 2) {
-  const { fetchCountries } = useGraphQL()
+  const { fetchCountries, fetchDetails } = useGraphQL()
   const { data, status, error } = await fetchCountries({ type, langCode })
+  const { data: brandData } = await fetchDetails({ legend: 'Marque', type, langCode })
+
+  allBrands = brandData?.value?.getUniqueDetails || []
 
   statusRef.value = status
   errorRef.value = error
@@ -96,9 +55,9 @@ if (pageType === 'country') {
 }
 
 if (pageType === 'brand') {
-  const { fetchAlcohols } = useGraphQL()
-  const brand = slugParamArr[3]
-  const { data, status, error } = await fetchAlcohols({ detailValue: brand, type, langCode })
+  const { fetchAlcoholsByDetailValue } = useGraphQL()
+  const brand = allBrands.find(brand => formatUrl(brand) === slugParamArr[3])
+  const { data, status, error } = await fetchAlcoholsByDetailValue({ detailValue: brand, type, langCode })
 
   statusRef.value = status
   errorRef.value = error
@@ -114,14 +73,17 @@ if (pageType === 'product') {
   alcoholsRef.value = data?.value?.alcohols || []
 }
 
-slugParamArr = slugParamArr.map((slug) => {
+const slugConvertedArr = slugParamArr.map((slug, index) => {
   if (slug === 'bieres') {
     slug = 'bières'
   }
-  if (pageType === 'country') {
+  if (index === 2) { // convert country iso
     slug = countriesRef.value.find(country => country.iso.toLowerCase() === slug)?.names.fr || slug
   }
-  if (pageType === 'product') {
+  if (index === 3) { // convert brand name
+    slug = allBrands.find(brand => formatUrl(brand) === slug) || slug
+  }
+  if (index === 4) { // convert product name
     slug = alcoholsRef.value[0]?.name || slug
   }
   return slug
@@ -129,20 +91,32 @@ slugParamArr = slugParamArr.map((slug) => {
 
 const { capitalizeFirstLetter } = useStringUtils()
 
-const slugParamStr = slugParamArr.map(slug => capitalizeFirstLetter(slug)).join(' / ')
+if (slugConvertedArr.length > 1) {
+  slugConvertedArr.shift()
+}
+
+const slugParamStr = slugConvertedArr.map(slug => capitalizeFirstLetter(slug)).join(' / ')
+
+const canonicalUrl = alcoholsRef.value[0] ? generateCanonicalUrl(alcoholsRef.value[0]) : getCanonicalUrl(slugParamArr)
 
 useHead({
-  title: `${slugParamStr || 'Bières, vins et spiritueux'} | Relaxxed spirits`,
+  title: `${slugParamStr || 'Bières, vins et spiritueux'}`,
   meta: [
-    { name: 'description', content: `${slugParamStr || 'Bières, vins et spiritueux'} | Relaxxed spirits` },
+    { name: 'description', content: `${slugParamStr || 'Bières, vins et spiritueux'}` },
+  ],
+  link: [
+    {
+      rel: 'canonical',
+      href: canonicalUrl,
+    },
   ],
 })
 </script>
 
 <template>
   <section class="category-listing">
-    <AppBreadcrumbs :countries="countriesRef" />
-    <h1><span>{{ capitalizeFirstLetter(slugParamArr[slugParamArr.length - 1] || 'Bières, vins et spiritueux') }}</span></h1>
+    <AppBreadcrumbs :countries="countriesRef" :brands="allBrands" />
+    <h1><span>{{ capitalizeFirstLetter(slugConvertedArr[slugConvertedArr.length - 1] || 'Bières, vins et spiritueux') }}</span></h1>
 
     <div v-if="statusRef?.value === 'pending'">
       <div class="spinner-loader" />
@@ -205,7 +179,10 @@ useHead({
     </div>
 
     <div v-else-if="pageType === 'product'">
-      <AppProductFull :alcohol="alcoholsRef[0]" />
+      <AppProductFull v-if="alcoholsRef[0]" :alcohol="alcoholsRef[0]" />
+      <div v-else class="category-listing__error">
+        Produit non trouvé!
+      </div>
     </div>
   </section>
 </template>

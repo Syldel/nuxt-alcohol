@@ -10,7 +10,7 @@ withDefaults(
   },
 )
 
-const route = useRoute()
+const { generateCanonicalUrl } = usePageUtils()
 </script>
 
 <template>
@@ -18,7 +18,7 @@ const route = useRoute()
     <h2>Liste des alcools</h2>
     <ul v-if="alcohols?.length > 0">
       <li v-for="alcohol in alcohols" :key="alcohol.asin">
-        <NuxtLink :to="`${route.path}/${alcohol.asin}`">
+        <NuxtLink :to="`${generateCanonicalUrl(alcohol)}`">
           {{ alcohol.name }}
         </NuxtLink>
       </li>

@@ -4,9 +4,11 @@ import type { CountryInfo } from '~/types/graphql/types'
 const props = withDefaults(
   defineProps<{
     countries?: CountryInfo[]
+    brands?: string[]
   }>(),
   {
     countries: () => [],
+    brands: () => [],
   },
 )
 const nuxtApp = useNuxtApp()
@@ -15,25 +17,26 @@ const route = useRoute()
 const siteOrigin = ref('')
 
 const { capitalizeFirstLetter } = useStringUtils()
+const { formatUrl } = usePageUtils()
 
 const normalizePath = (path: string): string => `/${path.replace(/^\/+|\/+$/g, '')}`
 
 const breadcrumbs = computed(() =>
   route.path.split('/').filter(Boolean).map((segment, index, arr) => {
-    const path = normalizePath(`/${arr.slice(0, index + 1).join('/')}`)
-    return { name: capitalizeFirstLetter(decodeURIComponent(segment.replace(/-/g, ' '))), path, isLast: index === arr.length - 1 }
-  }).map((segment) => {
-    const lowerName = segment.name.toLowerCase()
+    const lowerName = segment.toLowerCase()
     if (lowerName === 'cl') {
-      segment.name = 'Bières, vins et spiritueux'
+      segment = 'Bières, vins et spiritueux'
     }
     if (lowerName === 'bieres') {
-      segment.name = 'Bières'
+      segment = 'Bières'
     }
 
-    segment.name = props.countries.find(country => country.iso.toLowerCase() === lowerName)?.names.fr || segment.name
+    segment = props.countries.find(country => country.iso.toLowerCase() === lowerName)?.names.fr || segment
 
-    return segment
+    segment = props.brands.find(brand => formatUrl(brand) === lowerName) || segment
+
+    const path = normalizePath(`/${arr.slice(0, index + 1).join('/')}`)
+    return { name: capitalizeFirstLetter(decodeURIComponent(segment.replace(/-/g, ' '))), path, isLast: index === arr.length - 1 }
   }),
 )
 

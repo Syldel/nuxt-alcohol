@@ -1,4 +1,10 @@
 export function useAmznUtils() {
+  /**
+   * Extracts the ASIN from a given URL.
+   *
+   * @param {string} url - The URL string containing the ASIN.
+   * @returns {string | null} - The extracted ASIN, or null if no ASIN is found.
+   */
   const extractASIN = (url: string): string | null => {
     try {
       let decodedUrl: string
@@ -11,9 +17,9 @@ export function useAmznUtils() {
       }
 
       const match = decodedUrl.match(
-        /\/([a-z]{2,}\/){0,2}([A-Z0-9]{10,})/i,
+        /([A-Z0-9]{10,})/,
       )
-      return match ? match[2] : null // Retourner seulement l'ASIN (match[2])
+      return match ? match[1] : null // Retourner seulement l'ASIN (match[1])
     }
     catch (error) {
       console.error('Erreur lors de l\'extraction de l\'ASIN :', error)

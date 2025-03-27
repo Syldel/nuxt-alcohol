@@ -17,6 +17,8 @@ export interface Alcohol {
   reviews?: Reviews
   shortlink: string
   type: string
+  updatedAt: string
+  createdAt: string
 }
 
 export interface CountryInfo {
