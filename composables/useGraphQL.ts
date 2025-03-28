@@ -62,6 +62,30 @@ interface GetAlcoholsResponse {
 
 /* ****************************************************************************** */
 
+const GET_ALCOHOLS_FOR_SITEMAP = gql`
+  query GetAlcoholsForSitemap($type: String, $langCode: String) {
+    alcohols(filter: { type: $type, langCode: $langCode }) {
+      asin
+      name
+      details {
+        legend
+        value
+      }
+      country {
+        names {
+          fr
+        }
+        iso
+      }
+      type
+      langCode
+      updatedAt
+    }
+  }
+`
+
+/* ****************************************************************************** */
+
 const GET_ALCOHOL_FULL = gql`
   query GetAlcohols($asin: String, $type: String, $langCode: String) {
     alcohols(filter: { asin: $asin, type: $type, langCode: $langCode }) {
@@ -136,6 +160,10 @@ export function useGraphQL() {
     return await useAsyncQuery<GetAlcoholsResponse>(GET_ALCOHOLS_BY_DETAIL_VALUE, variables)
   }
 
+  const fetchAlcoholsForSitemap = async (variables?: Record<string, any>) => {
+    return await useAsyncQuery<GetAlcoholsResponse>(GET_ALCOHOLS_FOR_SITEMAP, variables)
+  }
+
   const fetchAlcoholFull = async (variables?: Record<string, any>) => {
     return await useAsyncQuery<GetAlcoholFullResponse>(GET_ALCOHOL_FULL, variables)
   }
@@ -144,6 +172,7 @@ export function useGraphQL() {
     fetchCountries,
     fetchDetails,
     fetchAlcoholsByDetailValue,
+    fetchAlcoholsForSitemap,
     fetchAlcoholFull,
   }
 }
