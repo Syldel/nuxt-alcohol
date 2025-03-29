@@ -62,3 +62,34 @@ export async function getAlcoholRoutes(variables: { type: string, langCode: stri
   }
   return urls
 }
+
+/**
+ * Generates all parent URLs for a given URL path.
+ * @param url - The URL path to process.
+ * @returns An array of parent URLs.
+ */
+function generateParentUrls(url: string): string[] {
+  const parts = url.split('/').filter(Boolean)
+  const parents: string[] = []
+
+  for (let i = 1; i <= parts.length; i++) {
+    parents.push(`/${parts.slice(0, i).join('/')}`)
+  }
+
+  return parents
+}
+
+/**
+ * Generates a set of unique parent URLs from a set or array of URLs.
+ * @param routes - The set or array of URL paths.
+ * @returns A sorted array of unique parent URLs.
+ */
+export function generateUniqueParentUrls(routes: Set<string> | string[]): string[] {
+  const allParents = new Set<string>()
+
+  routes.forEach((url) => {
+    generateParentUrls(url).forEach(parent => allParents.add(parent))
+  })
+
+  return Array.from(allParents).sort()
+}

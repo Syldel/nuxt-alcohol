@@ -42,8 +42,8 @@ export default defineNuxtConfig({
   },
   nitro: {
     hooks: {
-      'prerender:routes': async function (routes) {
-        const { getAlcoholRoutes } = await import('./utils/getRoutes')
+      'prerender:routes': async (routes) => {
+        const { getAlcoholRoutes, generateUniqueParentUrls } = await import('./utils/getRoutes')
 
         let allRoutes: string[] = []
 
@@ -61,7 +61,7 @@ export default defineNuxtConfig({
         }
 
         if (allRoutes.length) {
-          for (const route of allRoutes) {
+          for (const route of generateUniqueParentUrls(allRoutes)) {
             routes.add(route)
           }
         }
