@@ -1,65 +1,26 @@
-import type { Alcohol } from '~/types/graphql/types'
+import { useRuntimeConfig } from '#imports'
 
-import { gql } from 'graphql-tag'
-
-import { createApolloClient } from '~/apollo/client'
-import { usePageUtils } from '~/composables/usePageUtils'
-
-/* ****************************************************************************** */
-
-const GET_ALCOHOLS_FOR_SITEMAP = gql`
-  query GetAlcoholsForSitemap($type: String, $langCode: String) {
-    alcohols(filter: { type: $type, langCode: $langCode }) {
-      asin
-      name
-      details {
-        legend
-        value
-      }
-      country {
-        iso
-      }
-      type
-      langCode
-      updatedAt
-    }
-  }
-`
-
-/* ****************************************************************************** */
+import { getAlcoholRoutes } from '../../utils/getRoutes'
 
 export default defineEventHandler(async (event) => {
-  const { generateCanonicalUrl } = usePageUtils()
+  const config = useRuntimeConfig()
 
-  // ✅ Récupérer le client Apollo (côté serveur)
-  const apolloClient = createApolloClient()
+  let allRoutes: string[] = []
 
-  const langCode = 'fr_FR'
   const type = 'whisky'
-
-  let alcohols: Alcohol[] = []
+  const langCode = 'fr_FR'
 
   try {
-    const { data } = await apolloClient.query({
-      query: GET_ALCOHOLS_FOR_SITEMAP,
-      variables: { type, langCode },
-      fetchPolicy: 'no-cache',
-    })
-
-    if (!data?.alcohols) {
-      return send(event, 404, 'No alcohols found')
-    }
-
-    alcohols = data?.alcohols || []
+    allRoutes = await getAlcoholRoutes({ type, langCode }, config, { removeBaseUrl: false })
   }
   catch (error) {
     console.error('GraphQL Error:', error)
     return send(event, 500, 'Internal Server Error')
   }
 
-  const urls = alcohols.map(alcohol => ({
-    loc: generateCanonicalUrl(alcohol),
-    lastmod: new Date(alcohol.updatedAt).toISOString(),
+  const urls = allRoutes.map(urls => ({
+    loc: urls,
+    lastmod: new Date().toISOString(),
   }))
 
   setHeader(event, 'Content-Type', 'application/xml')

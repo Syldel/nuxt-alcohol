@@ -1,3 +1,5 @@
+import type { RuntimeConfig } from 'nuxt/schema'
+
 import process from 'node:process'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -39,6 +41,32 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    hooks: {
+      'prerender:routes': async function (routes) {
+        const { getAlcoholRoutes } = await import('./utils/getRoutes')
+
+        let allRoutes: string[] = []
+
+        const type = 'whisky'
+        const langCode = 'fr_FR'
+
+        try {
+          const nuxtConfig = (await import('./nuxt.config')).default
+          const nuxtRuntimeConfig = (nuxtConfig?.runtimeConfig || {}) as RuntimeConfig
+
+          allRoutes = await getAlcoholRoutes({ type, langCode }, nuxtRuntimeConfig, { removeBaseUrl: true })
+        }
+        catch (error) {
+          console.error('Error generating routes for pre-rendering:', error)
+        }
+
+        if (allRoutes.length) {
+          for (const route of allRoutes) {
+            routes.add(route)
+          }
+        }
+      },
+    },
     prerender: {
       routes: ['/sitemap.xml', '/robots.txt', '/alcools'],
     },

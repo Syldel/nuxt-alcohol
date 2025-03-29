@@ -1,3 +1,4 @@
+import type { RuntimeConfig } from 'nuxt/schema'
 import type { Alcohol } from '~/types/graphql/types'
 
 export function usePageUtils() {
@@ -62,8 +63,7 @@ export function usePageUtils() {
     return name
   }
 
-  const getCanonicalUrl = (slugParamArr: string[]) => {
-    const config = useRuntimeConfig()
+  const getCanonicalUrl = (slugParamArr: string[], config: RuntimeConfig) => {
     const siteUrl = config.public.siteUrl
 
     const slugConvertedArr = slugParamArr.map((slug, index) => {
@@ -193,8 +193,7 @@ export function usePageUtils() {
     })
   }
 
-  const generateCanonicalUrl = (alcohol: Alcohol) => {
-    const config = useRuntimeConfig()
+  const generateCanonicalUrl = (alcohol: Alcohol, config: RuntimeConfig) => {
     const siteUrl = config.public.siteUrl
 
     if (!alcohol) {

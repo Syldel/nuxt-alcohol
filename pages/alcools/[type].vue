@@ -26,6 +26,7 @@ useHead({
   ],
 })
 
+const config = useRuntimeConfig()
 const { generateCanonicalUrl } = usePageUtils()
 
 const { fetchAlcoholsForSitemap } = useGraphQL()
@@ -101,7 +102,7 @@ const groupedProducts = computed(() => groupProducts(data.value?.alcohols || [])
           <h3>{{ brand }}</h3>
           <ul>
             <li v-for="product in products" :key="product.asin">
-              <NuxtLink :to="generateCanonicalUrl(product)">
+              <NuxtLink :to="generateCanonicalUrl(product, config)">
                 {{ product.name }}
               </NuxtLink>
             </li>

@@ -1,10 +1,8 @@
-import { useRuntimeConfig } from '#imports'
+import type { RuntimeConfig } from 'nuxt/schema'
 import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client/core'
 import { setContext } from '@apollo/client/link/context'
 
-export function createApolloClient() {
-  const config = useRuntimeConfig()
-
+export function createApolloClient(config: RuntimeConfig) {
   // 🔹 Définir un link Http pour les requêtes GraphQL
   const httpLink = new HttpLink({
     uri: config.public.gqlHost,

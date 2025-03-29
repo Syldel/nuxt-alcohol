@@ -10,6 +10,7 @@ withDefaults(
   },
 )
 
+const config = useRuntimeConfig()
 const { generateCanonicalUrl } = usePageUtils()
 </script>
 
@@ -18,7 +19,7 @@ const { generateCanonicalUrl } = usePageUtils()
     <h2>Liste des alcools</h2>
     <ul v-if="alcohols?.length > 0">
       <li v-for="alcohol in alcohols" :key="alcohol.asin">
-        <NuxtLink :to="`${generateCanonicalUrl(alcohol)}`">
+        <NuxtLink :to="`${generateCanonicalUrl(alcohol, config)}`">
           {{ alcohol.name }}
         </NuxtLink>
       </li>

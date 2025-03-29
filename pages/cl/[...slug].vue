@@ -16,6 +16,7 @@ slugParamArr = slugParamArr.filter(s => !!s)
 const { extractASIN } = useAmznUtils()
 const productASIN = extractASIN(slugParamArr.join('/'))
 
+const config = useRuntimeConfig()
 const { getPageType, getCanonicalUrl, generateCanonicalUrl, formatUrl } = usePageUtils()
 
 const pageType = getPageType(slugParamArr)
@@ -97,7 +98,7 @@ if (slugConvertedArr.length > 1) {
 
 const slugParamStr = slugConvertedArr.map(slug => capitalizeFirstLetter(slug)).join(' / ')
 
-const canonicalUrl = alcoholsRef.value[0] ? generateCanonicalUrl(alcoholsRef.value[0]) : getCanonicalUrl(slugParamArr)
+const canonicalUrl = alcoholsRef.value[0] ? generateCanonicalUrl(alcoholsRef.value[0], config) : getCanonicalUrl(slugParamArr, config)
 
 useHead({
   title: `${slugParamStr || 'Bières, vins et spiritueux'}`,
