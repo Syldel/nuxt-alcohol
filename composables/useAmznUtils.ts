@@ -27,7 +27,38 @@ export function useAmznUtils() {
     }
   }
 
+  /**
+   * Génère une URL vers une image Amazon avec options (taille, crop, format)
+   */
+  const getAmazonImageUrl = (
+    id: string,
+    {
+      width,
+      height,
+      crop = true,
+      sr = true, // utilise `_SRw,h`
+    }: {
+      width?: number
+      height?: number
+      crop?: boolean
+      sr?: boolean
+    } = {},
+  ): string => {
+    if (!id)
+      return '/images/default-thumbnail.jpg'
+
+    let modifiers = ''
+    if (crop)
+      modifiers += '._AC'
+    if (sr && width && height)
+      modifiers += `._SR${width},${height}`
+
+    const format = 'jpg'
+    return `https://m.media-amazon.com/images/I/${id}${modifiers}.${format}`
+  }
+
   return {
     extractASIN,
+    getAmazonImageUrl,
   }
 }
