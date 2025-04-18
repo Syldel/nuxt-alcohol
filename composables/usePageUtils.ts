@@ -52,12 +52,29 @@ export function usePageUtils() {
     return text.replace(regex, '').replace(/\s+/g, ' ').trim()
   }
 
+  /**
+   * Removes '100 %' or '100%' from the given string.
+   *
+   * @param {string} pName - The input string.
+   * @returns {string} - The modified string without '100 %' or '100%'.
+   */
+  function removePercentage(pName: string): string {
+    return pName.replace(/100\s?%/g, '')
+  }
+
   function canonicalProductName(pName: string, wordsToRemove: string[]): string {
-    let name = transformAlcoolDegreeString(pName)
+    let name = removePercentage(pName)
+    name = transformAlcoolDegreeString(name)
     name = formatUrl(name)
     name = removeSpecificWords(name, wordsToRemove)
-    name = name.replace('-milliliters', '-ml')
-    name = transformUnitsString(name, ['ml', 'cl', 'an', 'year', 'l', 'degre', 'verre', 'carat'])
+    name = name.replace('-milliliters', '-ml').replace('-millilitres', '-ml')
+    name = name.replace('-milliliter', '-ml').replace('-millilitre', '-ml')
+    name = name.replace('-centiliters', '-cl').replace('-centilitres', '-cl')
+    name = name.replace('-centiliter', '-cl').replace('-centilitre', '-cl')
+    name = name.replace('-liters', '-l').replace('-litres', '-l')
+    name = name.replace('-liter', '-l').replace('-litre', '-l')
+    name = transformUnitsString(name, ['ml', 'cl', 'l', 'an', 'year', 'degre', 'verre', 'carat'])
+    name = name.replace('-1ans', '-1an')
     name = removeDuplicates(name.split('-')).join('-')
     name = name.replace(/-+/g, '-').replace(/^-+|-+$/g, '')
     return name
@@ -142,7 +159,6 @@ export function usePageUtils() {
     'elegant',
     'riche',
     'vieilli',
-    'giftbox',
     'specially',
     'selected',
     'patissieres',
@@ -152,7 +168,79 @@ export function usePageUtils() {
     'triplement',
     'distille',
     'offre',
+    'deguster',
   ]
+
+  const whitelistWords = [
+    'whiskey',
+    'whisky',
+    'bourbon',
+    'blended',
+    'blend',
+    'scotch',
+    'single',
+    'triple',
+    'malt',
+    'tourbé',
+    'coffret',
+    'giftbox',
+  ]
+
+  /**
+   * Filters out the words in the input string that are present in the whitelistWords array.
+   * @param inputString - The string to filter.
+   * @param whitelistWords - The array of allowed keywords.
+   * @returns A string containing only the keywords from whitelistWords found in the inputString.
+   */
+  function filterWhitelistWords(inputString: string, whitelistWords: string[]): string {
+    const cleanText = inputString.replace(/[^a-z0-9]+/gi, ' ').replace(/ +/g, ' ')
+    const words = cleanText.split(/\s+/)
+    const filteredWords = words.filter(word =>
+      whitelistWords.some(keyword => word.toLowerCase() === keyword.toLowerCase()),
+    )
+    return filteredWords.join(' ')
+  }
+
+  /**
+   * Extracts the first word that appears after a given word in a sentence, case-insensitively.
+   * If the first word after the target is numeric, also returns the second word as a concatenated string.
+   * If the first word is less than 2 characters long and not numeric, returns the next word instead.
+   * @param inputString - The input.
+   * @param targetWord - The word to search for.
+   * @returns The first word after the target word, or an adjusted word based on conditions, or null if not found.
+   */
+  function getFirstWordAfter(inputString: string, targetWord: string, skipWords?: string[]): string | null {
+    const cleanText = inputString.replace(/[^a-z0-9]+/gi, ' ').replace(/ +/g, ' ')
+    const words = cleanText.split(/\s+/)
+    const lowerTarget = targetWord.toLowerCase()
+    const index = words.findIndex(word => word.toLowerCase() === lowerTarget)
+
+    if (index !== -1 && index < words.length - 1) {
+      let nextIndex = index + 1
+      let firstWord = words[nextIndex]
+
+      // Skip if word is in skipWords
+      while (
+        skipWords?.some(skip => skip.toLowerCase() === firstWord.toLowerCase())
+        && nextIndex < words.length - 1
+      ) {
+        nextIndex++
+        firstWord = words[nextIndex]
+      }
+
+      if (!Number.isNaN(Number(firstWord)) && nextIndex < words.length - 1) {
+        return `${firstWord} ${words[nextIndex + 1]}`
+      }
+
+      if (firstWord.length <= 2 && Number.isNaN(Number(firstWord)) && nextIndex < words.length - 1) {
+        return words[nextIndex + 1]
+      }
+
+      return firstWord
+    }
+
+    return null
+  }
 
   /**
    * Rounds a number to the nearest integer, handling both dot and comma decimal separators.
@@ -193,6 +281,21 @@ export function usePageUtils() {
     })
   }
 
+  /**
+   * Extracts a value from the details of an alcohol object based on given keywords.
+   * @param details - The list of details.
+   * @param keywords - The keywords to search for.
+   * @param defaultValue - The default value to return if no match is found (optional).
+   * @returns The found value or the default value.
+   */
+  function extractDetail(details: { legend: string, value: string }[] | undefined, keywords: string[], defaultValue = '-'): string {
+    return details
+      ? details.find(detail =>
+        keywords.some(keyword => detail.legend.toLowerCase().startsWith(keyword.toLowerCase())),
+      )?.value || defaultValue
+      : defaultValue
+  }
+
   const generateCanonicalUrl = (alcohol: Alcohol, config: RuntimeConfig) => {
     const siteUrl = config.public.siteUrl
 
@@ -207,17 +310,45 @@ export function usePageUtils() {
       type = 'whiskys'
     }
     const countryIso = alcohol?.country?.iso ? alcohol?.country?.iso.toLowerCase() : '-'
-    let brand = alcohol.details
-      ? alcohol.details.find(detail =>
-        ['marque', 'brand'].some(keyword =>
-          detail.legend.toLowerCase().includes(keyword.toLowerCase()),
-        ),
-      )?.value || '-'
-      : '-'
+
+    let brand = extractDetail(alcohol.details, ['marque', 'brand'])
     brand = formatUrl(brand)
 
-    const name = canonicalProductName(alcohol.name, [category, 'whisky', 'whiskey', 'whiksy', 'drink', brand, ...blacklistWords])
-    const canonicalUrl = `${siteUrl}/cl/${category}/${type}/${countryIso}/${brand}/${alcohol.asin}-${name}`
+    const typeAlcohol = extractDetail(alcohol.details, ['type'])
+    let country = '-'
+    let region = '-'
+    if (alcohol.country?.iso === 'GB') {
+      country = alcohol.country?.regions ? alcohol.country?.regions[0]?.names?.fr : extractDetail(alcohol.details, ['pays', 'country'])
+      region = extractDetail(alcohol.details, ['région', 'region'])
+    }
+    else {
+      country = alcohol.country?.names?.fr || extractDetail(alcohol.details, ['pays', 'country'])
+      region = alcohol.country?.regions ? alcohol.country?.regions[0]?.names?.fr : extractDetail(alcohol.details, ['région', 'region'])
+    }
+
+    if (alcohol.country?.iso === 'US') {
+      country = '-'
+    }
+
+    const age = extractDetail(alcohol.details, ['âge', 'age'])
+    const volume = extractDetail(alcohol.details, ['volume'])
+    const unite = extractDetail(alcohol.details, ['unité'])
+
+    let volumeUnit = volume
+    if (volume && (volume.includes(',') || volume.includes('.'))) {
+      if (unite && (unite.includes(',') || unite.includes('.'))) {
+        volumeUnit = ''
+      }
+      else {
+        volumeUnit = unite
+      }
+    }
+
+    const name = canonicalProductName(
+      [getFirstWordAfter(alcohol.name, brand, ['whisky', 'whiskey', 'whiksy']), filterWhitelistWords(alcohol.name, whitelistWords), typeAlcohol, country, region, age, volumeUnit].join(' '),
+      [category, 'whisky', 'whiskey', 'whiksy', 'whiskys', brand, ...blacklistWords],
+    )
+    const canonicalUrl = `${siteUrl}/cl/${category}/${type}/${countryIso}/${brand}/${name}-${alcohol.asin}`
     return canonicalUrl
   }
 

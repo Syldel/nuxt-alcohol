@@ -19,7 +19,16 @@ const GET_ALCOHOLS_FOR_SITEMAP = gql`
         value
       }
       country {
+        names {
+          fr
+        }
         iso
+        regions {
+          names {
+            fr
+          }
+          iso
+        }
       }
       type
       langCode

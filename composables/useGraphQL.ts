@@ -49,7 +49,16 @@ const GET_ALCOHOLS_BY_DETAIL_VALUE = gql`
         value
       }
       country {
+        names {
+          fr
+        }
         iso
+        regions {
+          names {
+            fr
+          }
+          iso
+        }
       }
       type
     }
@@ -76,6 +85,12 @@ const GET_ALCOHOLS_FOR_SITEMAP = gql`
           fr
         }
         iso
+        regions {
+          names {
+            fr
+          }
+          iso
+        }
       }
       type
       langCode
