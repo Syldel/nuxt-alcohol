@@ -17,6 +17,22 @@ export default defineNuxtConfig({
     },
   },
   css: ['~/assets/styles/fonts.css'],
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'preconnect',
+          href: 'https://images-eu.ssl-images-amazon.com',
+          crossorigin: '',
+        },
+        {
+          rel: 'preconnect',
+          href: 'https://m.media-amazon.com',
+          crossorigin: '',
+        },
+      ],
+    },
+  },
   runtimeConfig: {
     // Variables d'environnement privées
     // apiSecret: process.env.API_SECRET || 'default-secret',
