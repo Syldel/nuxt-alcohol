@@ -6,7 +6,7 @@ import process from 'node:process'
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/apollo'],
+  modules: ['@nuxtjs/apollo', '@nuxt/image'],
   vite: {
     css: {
       preprocessorOptions: {

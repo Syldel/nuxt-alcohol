@@ -20,6 +20,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@nuxt/image": "^1.10.0",
     "@nuxtjs/apollo": "^5.0.0-alpha.14",
     "graphql": "^16.10.0",
     "nuxt": "^3.15.4",
