@@ -17,8 +17,6 @@ useSeoMeta({
 })
 
 const thumbAlts = computed(() => alcohol.images?.thumbnails?.map((id, index) => `${alcohol.name} - Thumbnail ${index + 1}`))
-
-const showDetails = ref(false)
 </script>
 
 <template>
@@ -26,10 +24,9 @@ const showDetails = ref(false)
     <AppHorizontalImages
       :ids="alcohol.images?.thumbnails || []"
       :alts="thumbAlts"
-      @ready="showDetails = true"
     />
 
-    <div v-if="showDetails" class="product-details">
+    <div class="product-details">
       <h2>Détails</h2>
       <ul>
         <li v-for="(item, index) in alcohol.details" :key="index">
