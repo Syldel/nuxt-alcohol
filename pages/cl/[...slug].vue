@@ -193,6 +193,10 @@ useHead({
 @use '@/assets/styles/components/titles'
 
 .category-listing
+  display: flex
+  flex-direction: column
+  gap: size(8)
+
   &__error
     color: var(--danger700)
 </style>
