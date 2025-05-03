@@ -101,7 +101,6 @@ const filteredBreadcrumbs = computed(() => breadcrumbs.value.slice(0, breadcrumb
 <style lang="sass" scoped>
 .breadcrumbs
   font-size: size(14)
-  padding: size(8) 0
 
   ul
     list-style: none
