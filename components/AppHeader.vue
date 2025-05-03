@@ -8,7 +8,7 @@ import logoSvgImage from '@/assets/images/relaxxed-alcohol-universe-logo.svg'
       <div class="short-zone">
         <img :src="logoSvgImage" alt="relaxxed" width="100" height="100">
       </div>
-      <nav>
+      <!-- <nav>
         <ul>
           <li>
             <NuxtLink to="/">
@@ -20,15 +20,10 @@ import logoSvgImage from '@/assets/images/relaxxed-alcohol-universe-logo.svg'
               À propos
             </NuxtLink>
           </li>
-          <!-- <li>
-            <NuxtLink to="/contact">
-              Contact
-            </NuxtLink>
-          </li> -->
         </ul>
-      </nav>
+      </nav> -->
       <div class="short-zone end-part">
-        <!-- Empty for now -->
+        <span class="slogan">"Des alcools d’exception pour des instants uniques."</span>
       </div>
     </div>
   </header>
@@ -53,6 +48,7 @@ header
     flex-direction: row
     @include until-breakpoint(phone)
       flex-direction: column
+      gap: 0
 
     .short-zone
       flex: 1
@@ -71,5 +67,10 @@ header
       display: flex
       flex-direction: row
       align-items: center
+      justify-content: flex-end
       gap: size(28)
+
+      .slogan
+        font-style: italic
+        font-weight: 500
 </style>
