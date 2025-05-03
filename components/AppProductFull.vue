@@ -17,6 +17,10 @@ useSeoMeta({
 })
 
 const thumbAlts = computed(() => alcohol.images?.thumbnails?.map((id, index) => `${alcohol.name} - Thumbnail ${index + 1}`))
+
+function redirectToProduct() {
+  window.location.href = `${alcohol.shortlink}`
+}
 </script>
 
 <template>
@@ -44,11 +48,17 @@ const thumbAlts = computed(() => alcohol.images?.thumbnails?.map((id, index) => 
       <h2>Description</h2>
       <div v-html="alcohol.description?.product" />
     </div>
+
+    <AppBuyButton label="Voir sur Amazon" :on-click="redirectToProduct" />
   </div>
 </template>
 
 <style lang="sass" scoped>
-// @use '@/assets/styles/components/titles'
+@use '@/assets/styles/components/titles'
 .product-full
   min-height: size(700)
+
+  display: flex
+  flex-direction: column
+  gap: size(12)
 </style>
