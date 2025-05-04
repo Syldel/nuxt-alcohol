@@ -5,6 +5,20 @@
   <div>
     <h2>Welcome</h2>
     <p>Simple text</p>
+    <p style="font-weight: 400">
+      font-weight: 400
+    </p>
+    <p style="font-weight: 500">
+      font-weight: 500 (je la désactive)
+    </p>
+    <p style="font-weight: 600">
+      font-weight: 600
+    </p>
+    <p style="font-weight: bold">
+      font-weight: bold
+    </p>
+    <strong>strong</strong>
+    <br><br>
     <!-- <div class="spinner-loader" /> -->
     <table>
       <tbody>

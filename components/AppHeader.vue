@@ -72,5 +72,5 @@ header
 
       .slogan
         font-style: italic
-        font-weight: 500
+        font-weight: 600
 </style>

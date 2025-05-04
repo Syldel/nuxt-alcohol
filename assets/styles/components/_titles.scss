@@ -49,29 +49,24 @@ h5 {
 @include until-breakpoint(phone) {
   h1 {
     font-size: size(26);
-    font-weight: 500;
     line-height: normal;
   }
 
   h2 {
     font-size: size(22);
-    font-weight: 500;
     line-height: normal;
   }
 
   h3 {
     font-size: size(18);
-    font-weight: 500;
     line-height: normal;
   }
 
   h4 {
     font-size: size(16);
-    font-weight: 500;
   }
 
   h5 {
     font-size: size(14);
-    font-weight: 500;
   }
 }
