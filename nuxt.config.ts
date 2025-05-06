@@ -42,6 +42,7 @@ export default defineNuxtConfig({
       gqlHost: process.env.GQL_HOST || '',
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
       ngrokHeader: process.env.NUXT_ENV_ADD_NGROK_HEADER,
+      amazonTag: process.env.NUXT_PUBLIC_AMAZON_TAG,
     },
   },
   apollo: {

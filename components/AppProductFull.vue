@@ -18,8 +18,12 @@ useSeoMeta({
 
 const thumbAlts = computed(() => alcohol.images?.thumbnails?.map((id, index) => `${alcohol.name} - Thumbnail ${index + 1}`))
 
+const config = useRuntimeConfig()
+const amazonTag = config.public.amazonTag
+
 function redirectToProduct() {
-  window.location.href = `${alcohol.shortlink}`
+  const amazonProductLink = `https://www.amazon.fr/dp/${alcohol.asin}/?tag=${amazonTag}`
+  window.open(amazonProductLink, '_blank')
 }
 </script>
 
