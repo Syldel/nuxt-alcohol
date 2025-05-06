@@ -62,11 +62,53 @@ export function usePageUtils() {
     return pName.replace(/100\s?%/g, '')
   }
 
+  /**
+   * Nettoie un slug en supprimant certaines parties conditionnellement.
+   *
+   * Pour chaque paire [mustExist, toRemove], la fonction supprime `toRemove`
+   * du slug uniquement si `mustExist` est déjà présent dans le slug.
+   *
+   * Exemple :
+   *   cleanSlugWithRules('super-blended-blend', [['blended', 'blend']])
+   *   => 'super-blended'
+   *
+   * @param slug - Le slug à nettoyer (ex. 'super-blended-blend-japon')
+   * @param rules - Un tableau de paires [condition, cibleÀSupprimer]
+   * @returns Le slug nettoyé
+   */
+  function cleanSlugWithRules(slug: string, rules: [string, string][]): string {
+    for (const [mustExist, toRemove] of rules) {
+      if (slug.includes(mustExist)) {
+        const regex = new RegExp(`${toRemove}(?=-|$)`, 'i')
+        slug = slug.replace(regex, '')
+      }
+    }
+    return slug
+  }
+
+  /**
+   * Nettoie un slug selon un ensemble fixe de règles définies en dur.
+   *
+   * @param slug - Le slug brut à nettoyer
+   * @returns Le slug nettoyé
+   */
+  function cleanProductSlug(slug: string): string {
+    const rules: [string, string][] = [
+      ['blended', 'blend'],
+      ['roasted', 'roast'],
+      ['smoked', 'smoke'],
+      ['tennessee', 'tenessee'],
+    ]
+
+    return cleanSlugWithRules(slug, rules)
+  }
+
   function canonicalProductName(pName: string, wordsToRemove: string[]): string {
     let name = removePercentage(pName)
     name = transformAlcoolDegreeString(name)
     name = formatUrl(name)
     name = removeSpecificWords(name, wordsToRemove)
+    name = cleanProductSlug(name)
     name = name.replace('-milliliters', '-ml').replace('-millilitres', '-ml')
     name = name.replace('-milliliter', '-ml').replace('-millilitre', '-ml')
     name = name.replace('-centiliters', '-cl').replace('-centilitres', '-cl')
