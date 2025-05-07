@@ -11,15 +11,16 @@ const props = withDefaults(
     brands: () => [],
   },
 )
-const nuxtApp = useNuxtApp()
-const route = useRoute()
 
-const siteOrigin = ref('')
+const route = useRoute()
 
 const { capitalizeFirstLetter } = useStringUtils()
 const { formatUrl } = usePageUtils()
 
 const normalizePath = (path: string): string => `/${path.replace(/^\/+|\/+$/g, '')}`
+
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl
 
 const breadcrumbs = computed(() =>
   route.path.split('/').filter(Boolean).map((segment, index, arr) => {
@@ -40,22 +41,6 @@ const breadcrumbs = computed(() =>
   }),
 )
 
-// Attendre la fin de l'hydratation avant de récupérer `window.location.origin`
-onMounted(() => {
-  if (nuxtApp.isHydrating && !nuxtApp.payload.serverRendered) {
-    const checkHydration = setInterval(() => {
-      if (!nuxtApp.isHydrating) {
-        siteOrigin.value = window.location.origin
-        clearInterval(checkHydration)
-      }
-    }, 200)
-  }
-  else {
-    // Si déjà client, récupère immédiatement
-    siteOrigin.value = window.location.origin
-  }
-})
-
 const breadcrumbJsonLd = computed(() => ({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -63,7 +48,7 @@ const breadcrumbJsonLd = computed(() => ({
     '@type': 'ListItem',
     'position': index + 1,
     'name': crumb.name,
-    'item': `${siteOrigin.value}${crumb.path}`, // Utilise l'URL client après hydratation
+    'item': `${siteUrl}${crumb.path}`,
   })),
 }))
 
