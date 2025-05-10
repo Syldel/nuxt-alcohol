@@ -15,6 +15,9 @@ function handleClick() {
     <button class="buy-button" @click="handleClick">
       {{ label }}
     </button>
+    <div class="partner-mention">
+      En tant que Partenaire Amazon, nous réalisons un bénéfice sur les achats remplissant les conditions requises.
+    </div>
   </div>
 </template>
 
@@ -30,9 +33,17 @@ function handleClick() {
   text-align: center
   box-shadow: 0 size(2) size(5) rgba(0, 0, 0, 0.1)
   margin: 0 size(-24)
+  display: flex
+  flex-direction: column
+  gap: size(8)
+  align-items: center
+  justify-content: center
 
   .buy-button
     border-radius: size(10)
     width: 90%
     max-width: size(400)
+
+  .partner-mention
+    font-size: size(12)
 </style>
