@@ -22,11 +22,6 @@ export default defineNuxtConfig({
       link: [
         {
           rel: 'preconnect',
-          href: 'https://images-eu.ssl-images-amazon.com',
-          crossorigin: '',
-        },
-        {
-          rel: 'preconnect',
           href: 'https://m.media-amazon.com',
           crossorigin: '',
         },
