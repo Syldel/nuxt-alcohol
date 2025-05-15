@@ -17,7 +17,12 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "build:prod": "nuxt build --env production",
+    "dev:prod": "nuxt dev --env production",
+    "generate:prod": "nuxt generate --env production",
+    "preview:prod": "nuxt preview --env production",
+    "deploy": "wrangler pages deploy .output/public --project-name=nuxt-alcohol"
   },
   "dependencies": {
     "@nuxt/image": "^1.10.0",

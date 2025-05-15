@@ -2,6 +2,10 @@ import type { RuntimeConfig } from 'nuxt/schema'
 
 import process from 'node:process'
 
+import { loadEnv } from './env.utils'
+
+loadEnv()
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
