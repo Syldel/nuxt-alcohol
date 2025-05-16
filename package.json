@@ -18,10 +18,10 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build:prod": "nuxt build --env production",
-    "dev:prod": "nuxt dev --env production",
-    "generate:prod": "nuxt generate --env production",
-    "preview:prod": "nuxt preview --env production",
+    "build:prod": "node nuxt-env-runner.js --cmd build --env prod",
+    "dev:prod": "node nuxt-env-runner.js --cmd dev --env prod",
+    "generate:prod": "node nuxt-env-runner.js --cmd generate --env prod",
+    "preview:prod": "node nuxt-env-runner.js --cmd preview --env prod",
     "deploy": "wrangler pages deploy .output/public --project-name=nuxt-alcohol"
   },
   "dependencies": {
