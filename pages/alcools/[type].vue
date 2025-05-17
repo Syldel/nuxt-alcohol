@@ -114,8 +114,6 @@ const groupedProducts = computed(() => groupProducts(data.value?.alcohols || [])
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/titles'
-
 .product-list
   &__error
     color: var(--danger700)

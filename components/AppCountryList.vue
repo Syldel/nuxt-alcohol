@@ -30,6 +30,5 @@ const route = useRoute()
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/titles'
 //.country-list
 </style>

@@ -1,0 +1,12 @@
+a {
+  @extend .alcohol-link;
+}
+
+.alcohol-link {
+  color: var(--neutral900);
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--primary300);
+  }
+}

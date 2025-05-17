@@ -22,7 +22,7 @@ function handleClick() {
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/alcohol-button'
+@use '@/assets/styles/components/alcohol-basic-button'
 
 .buy-button-container
   position: sticky

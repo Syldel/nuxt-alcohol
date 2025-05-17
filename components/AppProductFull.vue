@@ -58,7 +58,6 @@ function redirectToProduct() {
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/titles'
 .product-full
   min-height: size(700)
 

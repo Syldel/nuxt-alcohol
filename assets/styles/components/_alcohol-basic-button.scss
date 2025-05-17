@@ -1,0 +1,71 @@
+@use 'assets/styles/base/variables' as *;
+@use 'assets/styles/base/px2rem' as *;
+
+/*
+Available override CSS vars:
+--button-font-size: size(16);
+--button-padding-top: size(8);
+--button-padding-right: 0;
+--button-padding-bottom: size(12);
+--button-padding-left: size(79);
+--button-width: 100%;
+*/
+
+button {
+  @extend .alcohol-button;
+
+  &.max-width {
+    @extend .alcohol-button--max-width;
+  }
+}
+
+.alcohol-button {
+  margin: 0;
+  overflow: visible;
+  height: size(42);
+  line-height: normal;
+  padding: var(--button-padding-top, size(12)) var(--button-padding-right, size(18)) var(--button-padding-bottom, size(12)) var(--button-padding-left, size(18));
+  gap: size(8);
+  color: var(--neutral);
+
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  font-weight: 400;
+  font-size: var(--button-font-size, size(16));
+  font-family: $font-primary;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: none;
+  border-radius: size(22);
+
+  background-color: var(--primary500);
+  border-color: var(--primary500);
+
+  width: var(--button-width, initial);
+
+  &--max-width {
+    width: 100%;
+  }
+
+  // &:focus {
+  //   outline: size(3) solid var(--primary500);
+  // }
+
+  &:hover {
+    background-color: var(--primary300);
+    border-color: var(--primary300);
+  }
+
+  &:disabled {
+    background-color: var(--neutral300);
+    border-color: var(--neutral300);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

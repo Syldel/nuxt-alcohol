@@ -31,6 +31,5 @@ const { generateCanonicalUrl } = usePageUtils()
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/titles'
 //.alcohol-list
 </style>

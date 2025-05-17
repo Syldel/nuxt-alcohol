@@ -28,7 +28,7 @@ useHead({
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/alcohol-button'
+@use '@/assets/styles/components/alcohol-basic-button'
 
 .error-page
   display: flex

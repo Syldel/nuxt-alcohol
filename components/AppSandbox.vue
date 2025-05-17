@@ -3,7 +3,9 @@
     RELAXXED SPIRITS
   </h1>
   <div>
-    <h2>Welcome</h2>
+    <h2>Welcome (h2 title)</h2>
+    <h3>h3 title</h3>
+    <h4>h4 title</h4>
     <p>Simple text</p>
     <p style="font-weight: 400">
       font-weight: 400
@@ -183,5 +185,4 @@
 <style lang="sass" scoped>
 @use '@/assets/styles/components/alcohol-button'
 @use '@/assets/styles/components/alcohol-card'
-@use '@/assets/styles/components/titles'
 </style>

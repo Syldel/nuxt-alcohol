@@ -189,8 +189,6 @@ useHead({
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/titles'
-
 .category-listing
   display: flex
   flex-direction: column
