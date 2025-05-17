@@ -84,7 +84,7 @@ const groupedProducts = computed(() => groupProducts(data.value?.alcohols || [])
     </NuxtLink>
 
     <div v-if="status === 'pending'">
-      <div class="spinner-loader" />
+      ⏳ Chargement...
     </div>
     <div v-else-if="status === 'error'" class="product-list__error">
       {{ error?.message || 'Erreur inconnue' }}
@@ -114,7 +114,6 @@ const groupedProducts = computed(() => groupProducts(data.value?.alcohols || [])
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/spinner-loader'
 @use '@/assets/styles/components/titles'
 
 .product-list

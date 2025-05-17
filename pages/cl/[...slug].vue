@@ -120,7 +120,7 @@ useHead({
     <h1><span>{{ capitalizeFirstLetter(slugConvertedArr[slugConvertedArr.length - 1] || 'Bières, vins et spiritueux') }}</span></h1>
 
     <div v-if="statusRef?.value === 'pending'">
-      <div class="spinner-loader" />
+      ⏳ Chargement...
     </div>
     <div v-else-if="statusRef?.value === 'error'" class="category-listing__error">
       {{ errorRef?.value?.message || 'Erreur inconnue' }}
@@ -189,7 +189,6 @@ useHead({
 </template>
 
 <style lang="sass" scoped>
-@use '@/assets/styles/components/spinner-loader'
 @use '@/assets/styles/components/titles'
 
 .category-listing
