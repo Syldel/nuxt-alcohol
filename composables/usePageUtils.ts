@@ -136,7 +136,11 @@ export function usePageUtils() {
       return slug
     })
 
-    const canonicalUrl = `${siteUrl}/cl/${slugConvertedArr.join('/')}`
+    let canonicalUrl = `${siteUrl}/cl/${slugConvertedArr.join('/')}`
+    if (canonicalUrl.endsWith('/')) {
+      canonicalUrl = canonicalUrl.slice(0, -1)
+    }
+
     return canonicalUrl
   }
 

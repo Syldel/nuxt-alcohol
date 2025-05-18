@@ -98,7 +98,7 @@ if (slugConvertedArr.length > 1) {
 
 const slugParamStr = slugConvertedArr.map(slug => capitalizeFirstLetter(slug)).join(' / ')
 
-const canonicalUrl = alcoholsRef.value[0] ? generateCanonicalUrl(alcoholsRef.value[0], config) : getCanonicalUrl(slugParamArr, config)
+const canonicalUrl = (pageType === 'product' && alcoholsRef.value[0]) ? generateCanonicalUrl(alcoholsRef.value[0], config) : getCanonicalUrl(slugParamArr, config)
 
 useHead({
   title: `${slugParamStr || 'Bières, vins et spiritueux'}`,
