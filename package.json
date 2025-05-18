@@ -20,7 +20,7 @@
     "lint:fix": "eslint . --fix",
     "build:prod": "node nuxt-env-runner.js --cmd build --env prod",
     "dev:prod": "node nuxt-env-runner.js --cmd dev --env prod",
-    "generate:prod": "node nuxt-env-runner.js --cmd generate --env prod",
+    "generate:prod": "node nuxt-env-runner.js --cmd generate --env prod && node scripts/flatten.js",
     "preview:prod": "node nuxt-env-runner.js --cmd preview --env prod",
     "deploy": "wrangler pages deploy .output/public --project-name=nuxt-alcohol"
   },
