@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { Alcohol, CountryInfo } from '~/types/graphql/types'
 
+import { ESpiritType } from '@/types/alcohol.type'
+
+const spiritTypes = Object.values(ESpiritType)
+
 const route = useRoute()
 
 let slugParamArr: string[] = []
@@ -17,9 +21,14 @@ const { extractASIN } = useAmznUtils()
 const productASIN = extractASIN(slugParamArr.join('/'))
 
 const config = useRuntimeConfig()
-const { getPageType, getCanonicalUrl, generateCanonicalUrl, formatUrl } = usePageUtils()
+const { getPageType, getCanonicalUrl, generateCanonicalUrl, formatUrl, getSpiritTypeFromSlug } = usePageUtils()
 
 const pageType = getPageType(slugParamArr)
+
+function isSpiritType(value: string): value is ESpiritType {
+  return spiritTypes.includes(value as ESpiritType)
+}
+const isSpiritPageType = computed(() => isSpiritType(pageType))
 
 const countriesRef = ref<CountryInfo[]>([])
 const statusRef = ref()
@@ -29,7 +38,13 @@ const brandsRef = ref<string[]>([])
 const alcoholsRef = ref<Alcohol[]>([])
 
 const langCode = 'fr_FR'
-const type = 'whisky'
+let type: ESpiritType = ESpiritType.WHISKY
+if (slugParamArr.length >= 2) {
+  const detectedType = getSpiritTypeFromSlug(slugParamArr[1])
+  if (detectedType) {
+    type = detectedType
+  }
+}
 
 let allBrands: string[] = []
 
@@ -75,7 +90,7 @@ if (pageType === 'product') {
 }
 
 const slugConvertedArr = slugParamArr.map((slug, index) => {
-  if (slug === 'bieres') {
+  if (slug === 'beer') {
     slug = 'bières'
   }
   if (index === 2) { // convert country iso
@@ -146,28 +161,22 @@ useHead({
 
     <div v-else-if="pageType === 'spiritueux'">
       <ul>
-        <li>
-          <NuxtLink :to="`/cl/${slugParamArr.join('/')}/whiskys`">
-            Whiskys
+        <li v-for="spiritType in spiritTypes" :key="spiritType">
+          <NuxtLink :to="`/cl/${slugParamArr.join('/')}/${spiritType}s`">
+            {{ capitalizeFirstLetter(spiritType) }}s
           </NuxtLink>
-        </li>
-        <li>
-          Rhums
-        </li>
-        <li>
-          Vodkas
         </li>
       </ul>
     </div>
 
-    <div v-else-if="pageType === 'bieres'">
+    <div v-else-if="pageType === 'beer'">
       Visitez notre site partenaire :
       <NuxtLink to="https://www.beer-me.fr/">
         https://www.beer-me.fr/
       </NuxtLink>
     </div>
 
-    <div v-else-if="pageType === 'whiskys'">
+    <div v-else-if="isSpiritPageType">
       <AppCountryList :countries="countriesRef" />
     </div>
 

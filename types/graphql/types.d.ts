@@ -1,5 +1,3 @@
-// types/graphql/types.d.ts
-
 export interface Alcohol {
   _id: string
   asin: string

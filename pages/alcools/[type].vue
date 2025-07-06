@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Alcohol } from '~/types/graphql/types'
 
+const { getSpiritTypeFromSlug } = usePageUtils()
 const route = useRoute()
 
 let typeParamArr: string[] = []
@@ -14,9 +15,9 @@ typeParamArr = typeParamArr.filter(s => !!s)
 
 const productType = typeParamArr[0].trim()
 
-let gqlParamType = 'temp'
-if (['whiskys', 'whiskies', 'whiskeys'].includes(typeParamArr[0].toLowerCase().trim())) {
-  gqlParamType = 'whisky'
+const gqlParamType = getSpiritTypeFromSlug(typeParamArr?.[0] ?? '')
+if (!gqlParamType) {
+  throw new Error('Unknown alcohol type in route')
 }
 
 useHead({

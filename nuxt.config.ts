@@ -2,6 +2,8 @@ import type { RuntimeConfig } from 'nuxt/schema'
 
 import process from 'node:process'
 
+import { ESpiritType } from './types/alcohol.type'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -57,16 +59,17 @@ export default defineNuxtConfig({
       'prerender:routes': async (routes) => {
         const { getAlcoholRoutes, generateUniqueParentUrls } = await import('./utils/getRoutes')
 
-        let allRoutes: string[] = []
-
-        const type = 'whisky'
+        const allRoutes: string[] = []
         const langCode = 'fr_FR'
 
         try {
           const nuxtConfig = (await import('./nuxt.config')).default
           const nuxtRuntimeConfig = (nuxtConfig?.runtimeConfig || {}) as RuntimeConfig
 
-          allRoutes = await getAlcoholRoutes({ type, langCode }, nuxtRuntimeConfig, { removeBaseUrl: true })
+          for (const type of Object.values(ESpiritType) as ESpiritType[]) {
+            const routesForType = await getAlcoholRoutes({ type, langCode }, nuxtRuntimeConfig, { removeBaseUrl: true })
+            allRoutes.push(...routesForType)
+          }
         }
         catch (error) {
           console.error('Error generating routes for pre-rendering:', error)

@@ -1,17 +1,19 @@
 import { useRuntimeConfig } from '#imports'
 
+import { ESpiritType } from '~/types/alcohol.type'
 import { getAlcoholRoutes } from '../../utils/getRoutes'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
 
-  let allRoutes: string[] = []
-
-  const type = 'whisky'
+  const allRoutes: string[] = []
   const langCode = 'fr_FR'
 
   try {
-    allRoutes = await getAlcoholRoutes({ type, langCode }, config, { removeBaseUrl: false })
+    for (const type of Object.values(ESpiritType) as ESpiritType[]) {
+      const routes = await getAlcoholRoutes({ type, langCode }, config, { removeBaseUrl: false })
+      allRoutes.push(...routes)
+    }
   }
   catch (error) {
     console.error('GraphQL Error:', error)

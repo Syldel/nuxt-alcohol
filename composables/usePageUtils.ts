@@ -1,5 +1,6 @@
 import type { RuntimeConfig } from 'nuxt/schema'
 import type { Alcohol } from '~/types/graphql/types'
+import { ESpiritType } from '../types/alcohol.type'
 
 export function usePageUtils() {
   /**
@@ -342,6 +343,20 @@ export function usePageUtils() {
       : defaultValue
   }
 
+  const alcoholTypeToRouteData: Record<ESpiritType, { category: string, type: string }> = {
+    [ESpiritType.WHISKY]: { category: 'spiritueux', type: 'whiskys' },
+    [ESpiritType.RHUM]: { category: 'spiritueux', type: 'rhums' },
+    [ESpiritType.GIN]: { category: 'spiritueux', type: 'gins' },
+    // Ajoute ici les autres types si nécessaire
+  }
+
+  const alcoholTypeBlacklists: Record<ESpiritType, string[]> = {
+    [ESpiritType.WHISKY]: ['whisky', 'whiskey', 'whiksy', 'whiskys'],
+    [ESpiritType.RHUM]: ['rhum', 'rhums'],
+    [ESpiritType.GIN]: ['gin', 'gins'],
+    // ajoute les autres au besoin
+  }
+
   const generateCanonicalUrl = (alcohol: Alcohol, config: RuntimeConfig) => {
     const siteUrl = config.public.siteUrl
 
@@ -351,10 +366,12 @@ export function usePageUtils() {
 
     let category = '-'
     let type = '-'
-    if (alcohol.type === 'whisky') {
-      category = 'spiritueux'
-      type = 'whiskys'
+    if (alcohol.type && alcoholTypeToRouteData[alcohol.type as ESpiritType]) {
+      const routeData = alcoholTypeToRouteData[alcohol.type as ESpiritType]
+      category = routeData.category
+      type = routeData.type
     }
+
     const countryIso = alcohol?.country?.iso ? alcohol?.country?.iso.toLowerCase() : '-'
 
     let brand = extractDetail(alcohol.details, ['marque', 'brand'])
@@ -390,17 +407,40 @@ export function usePageUtils() {
       }
     }
 
+    const blacklistByType = alcoholTypeBlacklists[alcohol.type as ESpiritType] ?? []
     const name = canonicalProductName(
-      [getFirstWordAfter(alcohol.name, brand, ['whisky', 'whiskey', 'whiksy']), filterWhitelistWords(alcohol.name, whitelistWords), typeAlcohol, country, region, age, volumeUnit].join(' '),
-      [category, 'whisky', 'whiskey', 'whiksy', 'whiskys', brand, ...blacklistWords],
+      [
+        getFirstWordAfter(alcohol.name, brand, blacklistByType),
+        filterWhitelistWords(alcohol.name, whitelistWords),
+        typeAlcohol,
+        country,
+        region,
+        age,
+        volumeUnit,
+      ].join(' '),
+      [category, ...blacklistByType, brand, ...blacklistWords],
     )
+
     const canonicalUrl = `${siteUrl}/cl/${category}/${type}/${countryIso}/${brand}/${name}-${alcohol.asin}`
     return canonicalUrl
   }
 
+  function getSpiritTypeFromSlug(slug: string): ESpiritType | null {
+    const map: Record<string, ESpiritType> = {
+      whiskys: ESpiritType.WHISKY,
+      whiskies: ESpiritType.WHISKY,
+      whiskeys: ESpiritType.WHISKY,
+      rhums: ESpiritType.RHUM,
+      gins: ESpiritType.GIN,
+      // ...
+    }
+
+    return map[slug.toLowerCase().trim()] ?? null
+  }
+
   const getPageType = (slugParamArr: string[]) => {
     // 0 => ex: spiritueux
-    // 1 => ex: whiskys
+    // 1 => ex: whisky
     // 2 => country
     // 3 => brand
     // 4 => product
@@ -423,15 +463,14 @@ export function usePageUtils() {
     if (slugParamArr.length === 1) {
       const slug = slugParamArr[0].toLowerCase().trim()
       if (['bières', 'bieres'].includes(slug)) {
-        return 'bieres'
+        return 'beer'
       }
     }
 
     if (slugParamArr.length === 2) {
-      const slug = slugParamArr[1].toLowerCase().trim()
-      if (['whiskys', 'whiskies', 'whiskeys'].includes(slug)) {
-        return 'whiskys'
-      }
+      const type = getSpiritTypeFromSlug(slugParamArr[1])
+      if (type)
+        return type
     }
 
     if (slugParamArr.length === 3) {
@@ -456,5 +495,6 @@ export function usePageUtils() {
     getPageType,
     getCanonicalUrl,
     generateCanonicalUrl,
+    getSpiritTypeFromSlug,
   }
 }
