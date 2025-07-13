@@ -6,6 +6,12 @@ interface Props {
 const props = defineProps<Props>()
 
 const { getAmazonImageUrl } = useAmznUtils()
+
+useSeoMeta({
+  ogImage: props?.ids?.[0]
+    ? getAmazonImageUrl(props.ids[0], { width: 320, height: 320 })
+    : undefined,
+})
 </script>
 
 <template>

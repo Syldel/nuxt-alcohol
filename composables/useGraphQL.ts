@@ -112,18 +112,18 @@ const GET_ALCOHOL_FULL = gql`
         value
       }
       description {
-        images
+        #images
         product
-        manufacturer
+        #manufacturer
       }
-      familyLinks{
-        asin
-        thumbSrc
-        title
-      }
+      #familyLinks{
+      #  asin
+      #  thumbSrc
+      #  title
+      #}
       features
       images {
-        bigs
+        # bigs
         thumbnails
       }
       country {
@@ -139,19 +139,44 @@ const GET_ALCOHOL_FULL = gql`
           iso
         }
       }
-      newerVersion {
-        asin
-        thumbSrc
-        title
-      }
-      prices {
-        basisPrice {currency price}
-        priceToPay {currency price}
-      }
-      reviews {rating ratingCount}
+      # newerVersion {
+      #  asin
+      #  thumbSrc
+      #  title
+      # }
+      # prices {
+      #  basisPrice {currency price}
+      #  priceToPay {currency price}
+      # }
+      # reviews {rating ratingCount}
       shortlink
       type
-      langCode
+      # langCode
+      ai {
+        metaTitle
+        metaDescription
+        description
+        # slug
+        h1
+        # keywords
+        details {
+          legend
+          value
+        }
+        faq {
+          question
+          answer
+        }
+        og {
+          title
+          description
+        }
+        cocktails {
+          title
+          ingredients
+          instructions
+        }
+      }
     }
   }
 `

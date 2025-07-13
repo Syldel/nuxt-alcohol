@@ -100,7 +100,7 @@ const slugConvertedArr = slugParamArr.map((slug, index) => {
     slug = allBrands.find(brand => formatUrl(brand) === slug) || slug
   }
   if (index === 4) { // convert product name
-    slug = alcoholsRef.value[0]?.name || slug
+    slug = alcoholsRef.value[0]?.ai?.h1 || alcoholsRef.value[0]?.name || slug
   }
   return slug
 })
@@ -127,12 +127,20 @@ useHead({
     },
   ],
 })
+
+if (pageType === 'product' && alcoholsRef.value[0]) {
+  useSeoMeta({
+    ogUrl: canonicalUrl ?? undefined,
+  })
+}
 </script>
 
 <template>
   <section class="category-listing">
     <AppBreadcrumbs :countries="countriesRef" :brands="allBrands" />
-    <h1><span>{{ capitalizeFirstLetter(slugConvertedArr[slugConvertedArr.length - 1] || 'Bières, vins et spiritueux') }}</span></h1>
+    <h1 v-if="pageType !== 'product'">
+      <span>{{ capitalizeFirstLetter(slugConvertedArr[slugConvertedArr.length - 1] || 'Bières, vins et spiritueux') }}</span>
+    </h1>
 
     <div v-if="statusRef?.value === 'pending'">
       ⏳ Chargement...

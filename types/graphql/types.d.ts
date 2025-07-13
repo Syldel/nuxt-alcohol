@@ -17,6 +17,7 @@ export interface Alcohol {
   type: string
   updatedAt: string
   createdAt: string
+  ai?: AIContent
 }
 
 export interface CountryInfo {
@@ -81,4 +82,35 @@ export interface AlcoholFilterInput {
 
 export interface CreateAlcoholInput {
   // Define create input if needed
+}
+
+/* ************************* AIContent ************************* */
+
+export interface AIContent {
+  metaTitle?: string
+  metaDescription?: string
+  description?: string
+  details?: Details[]
+  slug?: string
+  h1?: string
+  keywords?: string[]
+  faq?: FAQ[]
+  og?: OG
+  cocktails?: Cocktail[]
+}
+
+export interface FAQ {
+  question: string
+  answer: string
+}
+
+export interface OG {
+  title: string
+  description: string
+}
+
+export interface Cocktail {
+  title: string
+  ingredients: string[]
+  instructions: string
 }
