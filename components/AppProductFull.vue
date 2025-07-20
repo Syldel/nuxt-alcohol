@@ -7,24 +7,112 @@ const props = defineProps<{
 
 const alcohol = props.alcohol
 
+const { getAmazonImageUrl } = useAmznUtils()
+
+const thumbnailId = alcohol.images?.thumbnails?.[0]
+const thumbnailUrl = thumbnailId
+  ? getAmazonImageUrl(thumbnailId, { width: 320, height: 320 })
+  : undefined
+
 useSeoMeta({
   title: `${alcohol.ai?.metaTitle || alcohol.name}`,
   description: `${alcohol.ai?.metaDescription || alcohol.name}`,
   ogTitle: `${alcohol.ai?.og?.title || alcohol.name}`,
   ogDescription: `${alcohol.ai?.og?.description || alcohol.name}`,
   // ogUrl: `https://www.maboutique.com/produit/${productAsin}`,
-  // ogImage: 'https://example.com/image.png',
+  ogImage: thumbnailUrl,
 })
 
 const thumbAlts = computed(() => alcohol.images?.thumbnails?.map((id, index) => `${alcohol.name} - Thumbnail ${index + 1}`))
 
 const config = useRuntimeConfig()
 const amazonTag = config.public.amazonTag
+const amazonProductLink = `https://www.amazon.fr/dp/${alcohol.asin}/?tag=${amazonTag}`
 
 function redirectToProduct() {
-  const amazonProductLink = `https://www.amazon.fr/dp/${alcohol.asin}/?tag=${amazonTag}`
   window.open(amazonProductLink, '_blank')
 }
+
+function getBrand(alcohol: Alcohol): string | undefined {
+  const details = alcohol.ai?.details ?? alcohol.details ?? []
+  const brandDetail = details.find(item => item.legend === 'Marque')
+  return brandDetail?.value
+}
+
+function cleanAndTruncate(htmlString: string, maxLength: number = 300): string {
+  if (typeof document === 'undefined') {
+    // côté serveur, retourne juste une version brute ou vide
+    return ''
+  }
+
+  const div = document.createElement('div')
+  div.innerHTML = htmlString
+  const text = div.textContent?.trim() || ''
+
+  if (text.length <= maxLength)
+    return text
+
+  // Couper sans tronquer un mot au milieu :
+  // on trouve le dernier espace avant maxLength
+  const truncated = text.slice(0, maxLength)
+  const lastSpace = truncated.lastIndexOf(' ')
+  if (lastSpace > 0) {
+    return `${truncated.slice(0, lastSpace)}...`
+  }
+  return `${truncated}...`
+}
+
+function convertCurrencySymbolToISO(symbol: string): string {
+  const map: Record<string, string> = {
+    '€': 'EUR',
+    '$': 'USD',
+    '£': 'GBP',
+  }
+  return map[symbol] || symbol
+}
+
+const jsonLdProduct = computed(() => {
+  const a = props.alcohol
+  if (!a || !(alcohol.ai?.h1 || alcohol.name) || !a.asin || !amazonTag)
+    return null
+
+  const name = alcohol.ai?.h1 || alcohol.name
+  const rawDescription = alcohol.ai?.description || alcohol.description?.product || ''
+  const description = cleanAndTruncate(rawDescription)
+  const brand = getBrand(a) || 'Marque inconnue'
+  const priceDetail = a.prices?.[0]?.priceToPay ?? a.prices?.[0]?.basisPrice
+  const price = priceDetail?.price
+  const currency = convertCurrencySymbolToISO(priceDetail?.currency ?? 'EUR')
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name,
+    'image': thumbnailUrl ? [thumbnailUrl] : [],
+    description,
+    'sku': a.asin,
+    'brand': {
+      '@type': 'Brand',
+      'name': brand,
+    },
+    'offers': price
+      ? {
+          '@type': 'Offer',
+          'url': amazonProductLink,
+          'priceCurrency': currency,
+          'price': price,
+          'availability': 'https://schema.org/InStock',
+        }
+      : undefined,
+    'aggregateRating': a.reviews?.rating
+      ? {
+          '@type': 'AggregateRating',
+          'ratingValue': a.reviews.rating,
+          'reviewCount': a.reviews.ratingCount || 1,
+        }
+      : undefined,
+  }
+})
 
 const jsonLdFAQ = computed(() => {
   const faq = props.alcohol.ai?.faq
@@ -61,19 +149,37 @@ const jsonLdCocktails = computed(() => {
   }))
 })
 
-useHead(() => ({
-  script: [
-    ...(jsonLdFAQ.value
-      ? [{
-          type: 'application/ld+json',
-          children: JSON.stringify(jsonLdFAQ.value),
-        }]
-      : []),
-    ...jsonLdCocktails.value.map(entry => ({
+const ldScripts = computed(() => {
+  const scripts = []
+
+  if (jsonLdProduct.value) {
+    scripts.push({
       type: 'application/ld+json',
-      children: JSON.stringify(entry),
-    })),
-  ],
+      children: JSON.stringify(jsonLdProduct.value),
+    })
+  }
+
+  if (jsonLdFAQ.value) {
+    scripts.push({
+      type: 'application/ld+json',
+      children: JSON.stringify(jsonLdFAQ.value),
+    })
+  }
+
+  if (jsonLdCocktails.value.length) {
+    jsonLdCocktails.value.forEach((entry) => {
+      scripts.push({
+        type: 'application/ld+json',
+        children: JSON.stringify(entry),
+      })
+    })
+  }
+
+  return scripts
+})
+
+useHead(() => ({
+  script: ldScripts.value,
 }))
 </script>
 

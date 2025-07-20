@@ -61,6 +61,9 @@ const GET_ALCOHOLS_BY_DETAIL_VALUE = gql`
         }
       }
       type
+      ai {
+        h1
+      }
     }
   }
 `
@@ -144,12 +147,12 @@ const GET_ALCOHOL_FULL = gql`
       #  thumbSrc
       #  title
       # }
-      # prices {
-      #  basisPrice {currency price}
-      #  priceToPay {currency price}
-      # }
-      # reviews {rating ratingCount}
-      shortlink
+      prices {
+       basisPrice {currency price}
+       priceToPay {currency price}
+      }
+      reviews {rating ratingCount}
+      # shortlink
       type
       # langCode
       ai {
