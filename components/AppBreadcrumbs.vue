@@ -5,10 +5,12 @@ const props = withDefaults(
   defineProps<{
     countries?: CountryInfo[]
     brands?: string[]
+    title?: string
   }>(),
   {
     countries: () => [],
     brands: () => [],
+    title: () => '',
   },
 )
 
@@ -22,22 +24,31 @@ const normalizePath = (path: string): string => `/${path.replace(/^\/+|\/+$/g, '
 const config = useRuntimeConfig()
 const siteUrl = config.public.siteUrl
 
+function removeAsin(name: string) {
+  return name.replace(/\sB[0-9A-Z]{9,10}$/, '')
+}
+
 const breadcrumbs = computed(() =>
   route.path.split('/').filter(Boolean).map((segment, index, arr) => {
+    const isLast = index === arr.length - 1
     const lowerName = segment.toLowerCase()
-    if (lowerName === 'cl') {
+
+    if (lowerName === 'cl')
       segment = 'Bières, vins et spiritueux'
-    }
-    if (lowerName === 'bieres') {
+    else if (lowerName === 'bieres')
       segment = 'Bières'
-    }
 
     segment = props.countries.find(country => country.iso.toLowerCase() === lowerName)?.names.fr || segment
-
     segment = props.brands.find(brand => formatUrl(brand) === lowerName) || segment
 
+    let nameFormatted = capitalizeFirstLetter(decodeURIComponent(removeAsin(segment.replace(/-/g, ' '))))
+    if (isLast && props.title?.trim()) {
+      nameFormatted = capitalizeFirstLetter(props.title.trim())
+    }
+
     const path = normalizePath(`/${arr.slice(0, index + 1).join('/')}`)
-    return { name: capitalizeFirstLetter(decodeURIComponent(segment.replace(/-/g, ' '))), path, isLast: index === arr.length - 1 }
+
+    return { name: nameFormatted, path, isLast }
   }),
 )
 

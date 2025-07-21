@@ -137,7 +137,7 @@ if (pageType === 'product' && alcoholsRef.value[0]) {
 
 <template>
   <section class="category-listing">
-    <AppBreadcrumbs :countries="countriesRef" :brands="allBrands" />
+    <AppBreadcrumbs :countries="countriesRef" :brands="allBrands" :title="slugConvertedArr[slugConvertedArr.length - 1]" />
     <h1 v-if="pageType !== 'product'">
       <span>{{ capitalizeFirstLetter(slugConvertedArr[slugConvertedArr.length - 1] || 'Bières, vins et spiritueux') }}</span>
     </h1>
