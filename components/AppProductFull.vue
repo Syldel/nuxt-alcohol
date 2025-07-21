@@ -39,27 +39,31 @@ function getBrand(alcohol: Alcohol): string | undefined {
   return brandDetail?.value
 }
 
-function cleanAndTruncate(htmlString: string, maxLength: number = 300): string {
-  if (typeof document === 'undefined') {
-    // côté serveur, retourne juste une version brute ou vide
+function cleanAndTruncate(input: string, maxLength = 300): string {
+  if (!input)
     return ''
+
+  // Supprimer les balises HTML
+  const textOnly = input
+    .replace(/<[^>]*>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (textOnly.length <= maxLength)
+    return textOnly
+
+  // Tronquer à la dernière phrase complète (.)
+  const truncated = textOnly.slice(0, maxLength)
+  const lastPeriod = truncated.lastIndexOf('.')
+
+  if (lastPeriod > 50) {
+    // S’il y a un point suffisamment tôt, on coupe là
+    return truncated.slice(0, lastPeriod + 1).trim()
   }
 
-  const div = document.createElement('div')
-  div.innerHTML = htmlString
-  const text = div.textContent?.trim() || ''
-
-  if (text.length <= maxLength)
-    return text
-
-  // Couper sans tronquer un mot au milieu :
-  // on trouve le dernier espace avant maxLength
-  const truncated = text.slice(0, maxLength)
+  // Sinon, on coupe proprement au dernier espace
   const lastSpace = truncated.lastIndexOf(' ')
-  if (lastSpace > 0) {
-    return `${truncated.slice(0, lastSpace)}...`
-  }
-  return `${truncated}...`
+  return `${truncated.slice(0, lastSpace).trim()}…`
 }
 
 function convertCurrencySymbolToISO(symbol: string): string {
@@ -78,7 +82,9 @@ const jsonLdProduct = computed(() => {
 
   const name = alcohol.ai?.h1 || alcohol.name
   const rawDescription = alcohol.ai?.description || alcohol.description?.product || ''
-  const description = cleanAndTruncate(rawDescription)
+  const description = rawDescription
+    ? cleanAndTruncate(rawDescription)
+    : `Découvrez ${name}, disponible sur Amazon.`
   const brand = getBrand(a) || 'Marque inconnue'
   const priceDetail = a.prices?.[0]?.priceToPay ?? a.prices?.[0]?.basisPrice
   const price = priceDetail?.price
