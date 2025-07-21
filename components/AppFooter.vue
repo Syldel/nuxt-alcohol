@@ -5,42 +5,38 @@ const currentYear = new Date().getFullYear()
 <template>
   <footer>
     <div class="footer">
-      <div>
-        <div class="footer__line">
-          <nav>
-            <ul>
-              <li>
-                <NuxtLink to="/">
-                  Accueil
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/about">
-                  À propos
-                </NuxtLink>
-              </li>
-            </ul>
-          </nav>
-          <!-- <div class="footer__sub">
-            <BlurHashLazyImage :src="githubSvg" :width="18" :height="18" class="footer__img" /> GitHub by <a href="https://github.com/Syldel" class="footer__link">@Syldel</a>.
-          </div>
-          <div class="footer__sub">
-            Using <BlurHashLazyImage :src="vueSvg" :width="18" :height="18" class="footer__img" /> Vue v{{ vueVersion }} and <BlurHashLazyImage :src="nuxtSvg" :width="18" :height="18" class="footer__img" /> Nuxt v{{ nuxtVersion }}
-          </div> -->
-        </div>
-        <div class="footer__line">
-          <span class="footer__sub">Partenaires:</span><a href="https://www.beer-me.fr/" target="_blank">www.beer-me.fr</a>
-        </div>
-        <div class="footer__line">
-          <div class="footer__sub">
-            Copyright © {{ currentYear }}. All rights reserved.
-          </div>
-        </div>
+      <div class="footer__line">
+        <nav>
+          <ul>
+            <li>
+              <NuxtLink to="/">
+                Accueil
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/about">
+                À propos
+              </NuxtLink>
+            </li>
+          </ul>
+        </nav>
       </div>
-      <div>
-        <div class="footer__icons">
-          <!-- <BlurHashLazyImage :src="vueSvg" :width="18" :height="18" class="footer__img" />
-          <BlurHashLazyImage :src="nuxtSvg" :width="18" :height="18" class="footer__img" /> -->
+      <div class="footer__main">
+        <div>
+          <div class="footer__line footer__partner">
+            <span class="footer__sub">Partenaires:</span><a href="https://www.beer-me.fr/" target="_blank">www.beer-me.fr</a>
+          </div>
+          <div class="footer__line">
+            <div class="footer__sub">
+              Copyright © {{ currentYear }}. All rights reserved.
+            </div>
+          </div>
+        </div>
+        <div class="footer__line">
+          <div class="footer__legal-mention">
+            <div>La vente de boissons alcoolisées aux mineurs de moins de 18 ans est interdite.</div>
+            <div>L'abus d'alcool est dangereux pour la santé. À consommer avec modération.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -63,47 +59,44 @@ footer
     width: 100%
     max-width: size($main-container-width)
     margin: 0 auto
-    //background-color: rgba(137, 127, 117, 0.1)
-
-    flex-direction: row
-    @include until-breakpoint(verysmall)
-      flex-direction: column
-      gap: size(15)
+    flex-direction: column
+    gap: size(15)
 
     > div
       &:first-child
         flex: 1
-      &:last-child,
-      .footer__icons
-        display: flex
-        align-items: center
+
+    &__main
+      display: flex
+      align-items: flex-end
+      margin: 0
+      gap: size(15)
 
     &__line,
     &__sub
       display: flex
       align-items: center
       margin: 0
+      gap: size(15)
 
     &__line
+      display: flex
       flex-wrap: wrap
-      &:first-child
-        margin-bottom: size(3)
 
     &__sub
       &:first-child
         margin-right: size(5)
-        .footer__img
-          &:first-child
-            margin-left: 0
 
     &__link
       margin-left: size(3)
 
-    &__img
-      margin-right: size(3)
-      margin-left: size(5)
-      width: size(18)
-      height: size(18)
+    &__partner
+      margin-bottom: size(8)
+      gap: 0
+
+    &__legal-mention
+      text-align: right
+      font-style: italic
 
     @include nav(#aaa, size(7))
 </style>
